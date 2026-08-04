@@ -1,0 +1,9 @@
+{
+  "/api": {
+    "_target_local": "http://localhost:5000",
+    "target": "https://xpem.com.br",
+    "secure": true,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  }
+}

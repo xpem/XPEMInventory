@@ -1,0 +1,145 @@
+<!-- Barra de ações -->
+<div class="row align-items-center mb-3">
+  <div class="col-9 col-sm-10">
+    <button type="button" class="btn btn-success" (click)="goToNewItem()">
+      <i class="bi bi-plus-lg"></i>&nbsp;&nbsp;Adicionar Item
+    </button>
+  </div>
+  <div class="col-3 col-sm-2 d-flex justify-content-end">
+    @if (searchPanelVisible()) {
+      <button
+        type="button"
+        class="btn btn-outline-danger"
+        (click)="toggleSearchPanel()"
+        title="Fechar filtros"
+        aria-label="Fechar filtros"
+      >
+        <i class="bi bi-funnel-fill"></i>
+      </button>
+    } @else {
+      <button
+        type="button"
+        class="btn btn-outline-secondary"
+        (click)="toggleSearchPanel()"
+        title="Abrir filtros"
+        aria-label="Abrir filtros"
+      >
+        <i class="bi bi-funnel"></i>
+      </button>
+    }
+  </div>
+</div>
+
+<!-- Painel de filtros -->
+@if (searchPanelVisible()) {
+  <div class="filter-panel mb-4">
+    <!-- Botões de situação -->
+    <div class="mb-3 d-flex flex-wrap gap-2">
+      @for (situation of situationList(); track situation.id) {
+        <button
+          type="button"
+          class="btn btn-sm filter-situation-btn"
+          [style.background-color]="situation.backgoundColor"
+          (click)="toggleSituation(situation.id!)"
+        >
+          {{ situation.name }}
+          <span class="badge text-bg-secondary ms-1">{{ situation.quantity }}</span>
+        </button>
+      }
+    </div>
+
+    <!-- Busca por nome -->
+    <div class="d-flex gap-2">
+      <input
+        type="text"
+        class="form-control"
+        [(ngModel)]="searchText"
+        placeholder="Nome do item..."
+        (keyup.enter)="search()"
+        aria-label="Buscar por nome"
+      />
+      <button type="button" class="btn btn-primary" (click)="search()" aria-label="Buscar">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </div>
+}
+
+<!-- Grid de itens -->
+@if (items().length > 0) {
+  <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+    @for (item of items(); track item.id) {
+      <div class="col">
+        <div
+          class="card h-100 linked-card card-custom"
+          (click)="goToItem(item.id)"
+          role="button"
+          [attr.aria-label]="'Ver item ' + item.name"
+          tabindex="0"
+          (keyup.enter)="goToItem(item.id)"
+        >
+          <div class="card-body">
+            <p class="card-title fw-bold mb-2">{{ item.name }}</p>
+
+            <div class="d-flex align-items-start gap-2">
+              <!-- Ícone de categoria -->
+              <div
+                class="category-circle-md flex-shrink-0"
+                [style.background]="item.category?.color ?? '#29a0b1'"
+                aria-hidden="true"
+              >
+                <i class="bi bi-{{ item.subCategoryIcon }}" style="font-size: 18px; color: white"></i>
+              </div>
+
+              <!-- Info -->
+              <div class="flex-grow-1 min-width-0">
+                <p class="card-subtitle mb-1 text-body-secondary" style="font-size: 0.75rem">
+                  {{ item.categoryAndSubCategory }}
+                </p>
+                <p class="mb-1 status-badge">{{ item.situation?.name }}</p>
+                <div class="d-flex justify-content-between">
+                  <span class="card-text text-body-secondary" style="font-size: 0.8rem">
+                    {{ formatDate(item.acquisitionDate) }}
+                  </span>
+                  <span style="color: var(--primary-green); font-weight: 600; font-size: 0.9rem">
+                    {{ formatCurrency(item.purchaseValue) }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+} @else if (!isLoading()) {
+  <div class="text-center my-5" style="color: var(--text-muted)">
+    <i class="bi bi-inbox" style="font-size: 3rem"></i>
+    <p class="mt-2">Nenhum item encontrado.</p>
+  </div>
+}
+
+<!-- Loading inicial -->
+@if (isLoading()) {
+  <div class="d-flex justify-content-center my-5">
+    <div class="spinner-border" style="color: var(--primary-green)" role="status">
+      <span class="visually-hidden">Carregando...</span>
+    </div>
+  </div>
+}
+
+<!-- Loading "carregar mais" (scroll infinito) -->
+@if (isLoadingMore()) {
+  <div class="d-flex justify-content-center mt-4">
+    <div class="spinner-grow spinner-grow-sm" style="color: var(--primary-green)" role="status">
+      <span class="visually-hidden">Carregando mais...</span>
+    </div>
+  </div>
+}
+
+<!-- Indicador de mais itens disponíveis -->
+@if (items().length > 0 && !isLoading() && currentPage() < totalPages()) {
+  <div class="text-center mt-3" style="color: var(--text-muted); font-size: 0.85rem">
+    <i class="bi bi-arrow-down-circle"></i> Role para carregar mais itens
+  </div>
+}

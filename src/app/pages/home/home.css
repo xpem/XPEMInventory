@@ -1,0 +1,35 @@
+.filter-panel {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.filter-situation-btn {
+  color: white;
+  border: none;
+  font-size: 0.8rem;
+  transition: filter 0.15s;
+}
+
+.filter-situation-btn:hover {
+  filter: brightness(1.2);
+  color: white;
+}
+
+.status-badge {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+/* Garante que o texto longo não quebre o card */
+.min-width-0 {
+  min-width: 0;
+}
+
+.card-title {
+  /* truncar nome muito longo */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

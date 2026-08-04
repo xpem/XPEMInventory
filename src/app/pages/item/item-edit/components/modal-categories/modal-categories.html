@@ -1,0 +1,70 @@
+<div
+  class="modal fade"
+  id="modalCategories"
+  tabindex="-1"
+  data-bs-backdrop="static"
+  data-bs-keyboard="false"
+  aria-labelledby="modalCategoriesLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-scrollable">
+    <div class="modal-content background-custom">
+      <div class="modal-header" style="background: radial-gradient(circle at top right, #1ca64f 0%, #006370 100%)">
+        <h5 class="modal-title text-white" id="modalCategoriesLabel">Categorias</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
+      </div>
+
+      <div class="modal-body">
+        <div class="list-group">
+          @for (cat of categories; track cat.id) {
+            @if (cat.subCategories && cat.subCategories.length > 0) {
+              <!-- Categoria com subcategorias: abre modal de subcategorias -->
+              <a
+                class="list-group-item list-group-item-action"
+                href="#"
+                data-bs-toggle="modal"
+                data-bs-target="#modalSubCategories"
+                (click)="onShowSub(cat.id)"
+                style="background-color: var(--bg-card); color: var(--text-light); border-color: var(--border-color)"
+              >
+                <div class="d-flex align-items-center justify-content-between">
+                  <div class="d-flex align-items-center gap-2">
+                    <div
+                      class="category-circle-md flex-shrink-0"
+                      [style.background]="cat.color ?? '#29a0b1'"
+                    ></div>
+                    <span>{{ cat.name }}</span>
+                  </div>
+                  <i class="bi bi-chevron-right" style="color: var(--text-muted)"></i>
+                </div>
+              </a>
+            } @else {
+              <!-- Categoria sem subcategorias: seleciona direto -->
+              <a
+                class="list-group-item list-group-item-action"
+                href="#"
+                data-bs-dismiss="modal"
+                (click)="onSelect(cat.id)"
+                style="background-color: var(--bg-card); color: var(--text-light); border-color: var(--border-color)"
+              >
+                <div class="d-flex align-items-center gap-2">
+                  <div
+                    class="category-circle-md flex-shrink-0"
+                    [style.background]="cat.color ?? '#29a0b1'"
+                  ></div>
+                  <span>{{ cat.name }}</span>
+                </div>
+              </a>
+            }
+          }
+        </div>
+      </div>
+
+      <div class="modal-footer" style="border-top-color: var(--border-color)">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          <i class="bi bi-arrow-left-short"></i> Voltar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

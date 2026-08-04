@@ -1,0 +1,62 @@
+<div
+  class="modal fade"
+  id="modalSelectFile"
+  tabindex="-1"
+  data-bs-backdrop="static"
+  data-bs-keyboard="false"
+  aria-labelledby="modalSelectFileLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-scrollable">
+    <div class="modal-content background-custom">
+      <div class="modal-header" style="background: radial-gradient(circle at top right, #1ca64f 0%, #006370 100%)">
+        <h5 class="modal-title text-white" id="modalSelectFileLabel">Selecionar Imagem</h5>
+      </div>
+
+      <div class="modal-body">
+        @if (!tempImageDataUrl()) {
+          <div class="mb-3">
+            <input
+              type="file"
+              id="fileInput"
+              class="form-control"
+              accept="image/*"
+              (change)="onFileChange($event)"
+              aria-label="Selecionar arquivo de imagem"
+            />
+          </div>
+        }
+
+        @if (tempImageDataUrl()) {
+          <div class="d-flex justify-content-center mb-3">
+            <img
+              [src]="tempImageDataUrl()"
+              class="img-fluid"
+              style="max-width: 400px; height: auto; border: 1px solid var(--border-color)"
+              alt="Pré-visualização"
+            />
+          </div>
+          <div class="d-flex justify-content-center flex-wrap gap-2">
+            <button type="button" class="btn btn-outline-danger" (click)="clearFile()">
+              <i class="bi bi-trash"></i> Limpar
+            </button>
+            <button
+              type="button"
+              class="btn btn-success"
+              data-bs-dismiss="modal"
+              (click)="saveFile()"
+            >
+              <i class="bi bi-check-lg"></i> Usar Imagem
+            </button>
+          </div>
+        }
+      </div>
+
+      <div class="modal-footer" style="border-top-color: var(--border-color)">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" (click)="clearFile()">
+          <i class="bi bi-arrow-left-short"></i> Voltar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

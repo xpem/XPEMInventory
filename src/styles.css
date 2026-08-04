@@ -1,1 +1,156 @@
-/* You can add global styles to this file, and also import other style files */
+/* Global styles for XPEMInventory */
+
+:root {
+    --primary-green: #22c55e;
+    --primary-green-dark: #16a34a;
+    --primary-green-light: #4ade80;
+    --primary-red: #ef4444;
+    --primary-red-dark: #dc2626;
+
+    /* Backgrounds */
+    --bg-dark: #1a1d23;
+    --bs-body-bg-custom: #191d24;
+    --bg-card: #23262d;
+    --bg-sidebar: #23262d;
+    --bg-muted: #303542;
+
+    /* Text colors */
+    --text-light: #fafafa;
+    --text-muted: #a3a3a3;
+    --text-dark: #0a0a0b;
+
+    /* Borders */
+    --border-color: #333;
+    --border-light: #525252;
+
+    /* Status colors */
+    --status-em-uso: #166534;
+    --status-guardado: #1f3785;
+    --status-defeito: #dc2626;
+    --status-revendido: #7c3aed;
+    --status-dispensado: #6b7280;
+    --status-emprestado: #ea580c;
+    --status-doado: #059669;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    font-family: Roboto, 'Helvetica Neue', sans-serif;
+    background-color: var(--bs-body-bg-custom) !important;
+}
+
+.content {
+    padding-top: 1.1rem;
+}
+
+/* ----------------------------------------
+   Linked card (clicável)
+---------------------------------------- */
+.linked-card {
+    transition: filter 0.2s;
+}
+
+.linked-card:hover {
+    cursor: pointer;
+    filter: brightness(1.18);
+}
+
+/* ----------------------------------------
+   Ícone circular de categoria
+---------------------------------------- */
+.category-circle-md {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #29a0b1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 5px;
+    margin-right: 5px;
+}
+
+/* ----------------------------------------
+   Card customizado (tema dark)
+---------------------------------------- */
+.card-custom {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+    color: var(--text-light);
+}
+
+.card-custom .card-body {
+    background-color: #272c35;
+    border-radius: var(--bs-card-border-radius);
+}
+
+.card-custom:hover {
+    transform: translateY(-2px);
+    box-shadow:
+        0 10px 25px -3px rgba(0, 0, 0, 0.1),
+        0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    border-color: var(--primary-green);
+}
+
+.card-custom .card-title {
+    color: var(--primary-green);
+    font-weight: 600;
+    transition: color 0.2s ease;
+}
+
+.card-custom:hover .card-title {
+    transition: all 0.2s ease-in-out;
+}
+
+.card-custom:hover .card-total-value {
+    transition: all 0.2s ease-in-out;
+}
+
+.card-custom .card-header {
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: color 0.2s ease;
+}
+
+.card-custom:hover .card-header {
+    transition: all 0.2s ease-in-out;
+}
+
+.card-custom .card-text {
+    transition: color 0.2s ease;
+}
+
+.card-custom:hover .card-text {
+    color: var(--text-light);
+}
+
+/* ----------------------------------------
+   Background customizado
+---------------------------------------- */
+.background-custom {
+    background-color: #272c35;
+}
+
+/* ----------------------------------------
+   Badges customizados
+---------------------------------------- */
+.text-bg-warning-custom {
+    color: #ffc107 !important;
+    background-color: #ffc10742 !important;
+}
+
+.text-bg-info-custom {
+    color: #0dcaf0 !important;
+    background-color: #0dcaf042 !important;
+}
+
+.text-bg-success-custom {
+    color: #22c55e !important;
+    background-color: #21c45d42 !important;
+}

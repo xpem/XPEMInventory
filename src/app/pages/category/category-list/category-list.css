@@ -1,0 +1,4 @@
+/* CategoryList styles */
+.list-group-item:hover {
+  filter: brightness(1.12);
+}

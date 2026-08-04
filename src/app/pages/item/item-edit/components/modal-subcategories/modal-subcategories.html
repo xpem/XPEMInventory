@@ -1,0 +1,75 @@
+<div
+  class="modal fade"
+  id="modalSubCategories"
+  tabindex="-1"
+  data-bs-backdrop="static"
+  data-bs-keyboard="false"
+  aria-labelledby="modalSubCategoriesLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-scrollable">
+    <div class="modal-content background-custom">
+      <div class="modal-header" style="background: radial-gradient(circle at top right, #1ca64f 0%, #006370 100%)">
+        <h5 class="modal-title text-white" id="modalSubCategoriesLabel">
+          {{ selectedCategory?.name ?? 'Subcategorias' }}
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
+      </div>
+
+      <div class="modal-body">
+        @if (selectedCategory) {
+          <div class="list-group">
+            <!-- Opção de selecionar apenas a categoria (sem subcategoria) -->
+            <a
+              class="list-group-item list-group-item-action"
+              href="#"
+              data-bs-dismiss="modal"
+              (click)="onSelect(null)"
+              style="background-color: var(--bg-card); color: var(--text-light); border-color: var(--border-color)"
+            >
+              <div class="d-flex align-items-center gap-2">
+                <div
+                  class="category-circle-md flex-shrink-0"
+                  [style.background]="selectedCategory.color ?? '#29a0b1'"
+                ></div>
+                <span>[ {{ selectedCategory.name }} ]</span>
+              </div>
+            </a>
+
+            @for (sub of selectedCategory.subCategories ?? []; track sub.id) {
+              <a
+                class="list-group-item list-group-item-action"
+                href="#"
+                data-bs-dismiss="modal"
+                (click)="onSelect(sub.id)"
+                style="background-color: var(--bg-card); color: var(--text-light); border-color: var(--border-color)"
+              >
+                <div class="d-flex align-items-center gap-2">
+                  <div
+                    class="category-circle-md flex-shrink-0 d-flex justify-content-center align-items-center"
+                    [style.background]="selectedCategory.color ?? '#29a0b1'"
+                  >
+                    <i class="bi bi-{{ sub.iconName ?? 'tag' }}" style="font-size: 18px; color: white"></i>
+                  </div>
+                  <span>{{ sub.name }}</span>
+                </div>
+              </a>
+            }
+          </div>
+        }
+      </div>
+
+      <div class="modal-footer" style="border-top-color: var(--border-color)">
+        <!-- Voltar para o modal de categorias -->
+        <button
+          type="button"
+          class="btn btn-secondary"
+          data-bs-target="#modalCategories"
+          data-bs-toggle="modal"
+        >
+          <i class="bi bi-arrow-left-short"></i> Voltar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,10 @@
+.save-btn-container {
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+  z-index: 100;
+}
+
+.store-datalist-input::-webkit-calendar-picker-indicator {
+  display: none;
+}
