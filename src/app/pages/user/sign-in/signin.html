@@ -1,70 +1,80 @@
-<div class="d-flex justify-content-center mt-5 mb-4">
-  <i class="bi bi-clipboard-check" style="color: white; font-size: 70px"></i>
-</div>
-
-<div class="d-flex justify-content-center">
-  <form
-    [formGroup]="form"
-    (ngSubmit)="onSubmit()"
-    class="col-lg-6 col-12"
-    style="max-width: 500px"
-    novalidate
-  >
-    <h4 class="text-center mb-4" style="color: var(--text-light)">XPEM Inventário</h4>
-
-    <!-- Email -->
-    <div class="mb-3">
-      <label for="inputEmail" class="form-label">Email</label>
-      <input
-        type="email"
-        class="form-control"
-        id="inputEmail"
-        formControlName="email"
-        autocomplete="email"
-        [class.is-invalid]="submitted && f['email'].errors"
-      />
-      @if (submitted && f['email'].errors) {
-        <div class="invalid-feedback">
-          @if (f['email'].errors['required']) { Email é obrigatório. }
-          @if (f['email'].errors['email']) { Informe um email válido. }
-        </div>
-      }
+<div class="signin-page">
+  <div class="signin-card">
+    <div class="signin-brand">
+      <span class="brand-dot"></span>
+      <span class="brand-name">Xpem Inventário</span>
     </div>
 
-    <!-- Senha -->
-    <div class="mb-4">
-      <label for="inputPassword" class="form-label">Senha</label>
-      <input
-        type="password"
-        class="form-control"
-        id="inputPassword"
-        formControlName="password"
-        autocomplete="current-password"
-        [class.is-invalid]="submitted && f['password'].errors"
-      />
-      @if (submitted && f['password'].errors) {
-        <div class="invalid-feedback">
-          @if (f['password'].errors['required']) { Senha é obrigatória. }
-          @if (f['password'].errors['minlength']) { Mínimo de 6 caracteres. }
-        </div>
-      }
-    </div>
+    <h1 class="signin-title">Bem-vindo de volta</h1>
+    <p class="signin-subtitle">Entre para continuar seu cantinho organizado.</p>
 
-    <!-- Botão -->
-    <div class="d-grid mb-3">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+      <div class="field-group">
+        <label for="inputEmail" class="field-label">E-mail ou usuário</label>
+        <input
+          type="email"
+          class="field-input"
+          id="inputEmail"
+          formControlName="email"
+          autocomplete="email"
+          placeholder="voce@exemplo.com"
+          [class.field-error-border]="submitted && f['email'].errors"
+        />
+        @if (submitted && f['email'].errors) {
+          <div class="field-error">
+            @if (f['email'].errors['required']) { Email é obrigatório. }
+            @if (f['email'].errors['email']) { Informe um email válido. }
+          </div>
+        }
+      </div>
+
+      <div class="field-group">
+        <label for="inputPassword" class="field-label">Senha</label>
+        <div class="password-wrapper">
+          <input
+            [type]="showPassword ? 'text' : 'password'"
+            class="field-input"
+            id="inputPassword"
+            formControlName="password"
+            autocomplete="current-password"
+            [class.field-error-border]="submitted && f['password'].errors"
+          />
+          <button type="button" class="password-toggle" (click)="showPassword = !showPassword">
+            {{ showPassword ? 'ocultar' : 'ver' }}
+          </button>
+        </div>
+        @if (submitted && f['password'].errors) {
+          <div class="field-error">
+            @if (f['password'].errors['required']) { Senha é obrigatória. }
+            @if (f['password'].errors['minlength']) { Mínimo de 4 caracteres. }
+          </div>
+        }
+      </div>
+
+      <div class="signin-options">
+        <label class="remember-label">
+          <input type="checkbox" class="remember-check" /> Lembrar-me
+        </label>
+        <a routerLink="/user/update-password" class="forgot-link">Esqueci a senha</a>
+      </div>
+
       @if (!isLoading()) {
-        <button type="submit" class="btn btn-success">
-          <i class="bi bi-box-arrow-in-right"></i>&nbsp;&nbsp;Acessar
-        </button>
+        <button type="submit" class="btn-signin">Entrar</button>
       } @else {
-        <button type="button" class="btn btn-success" disabled>
+        <button type="button" class="btn-signin" disabled>
           <span class="spinner-grow spinner-grow-sm" aria-hidden="true"></span>
-          &nbsp;&nbsp;Acessando...
+          &nbsp;Acessando...
         </button>
       }
-    </div>
 
-    <div class="mb-1">Não tem conta? <a routerLink="/user/signup">Criar Conta</a></div>
-    <div>Esqueceu a senha? <a routerLink="/user/update-password">Recuperar Senha</a></div>
-  </form>
+      <div class="signin-divider">
+        <span>NOVO POR AQUI</span>
+      </div>
+
+      <p class="signup-prompt">
+        Ainda não tem um cantinho?
+        <a routerLink="/user/signup" class="signup-link">Cadastre-se</a>
+      </p>
+    </form>
+  </div>
 </div>

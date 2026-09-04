@@ -23,6 +23,7 @@ export class SignIn implements OnInit {
   form!: FormGroup;
   submitted = false;
   isLoading = signal(false);
+  showPassword = false;
 
   ngOnInit() {
     // Redireciona se já estiver autenticado (apenas sinal local — sem chamada à API)
@@ -33,7 +34,7 @@ export class SignIn implements OnInit {
 
     this.form = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
+      password: ['', [Validators.required, Validators.minLength(4)]],
     });
   }
 
@@ -49,7 +50,7 @@ export class SignIn implements OnInit {
 
     this.userApi.signIn(this.form.value).subscribe({
       next: (response) => {
-        this.authService.saveToken(response.token);
+        this.authService.saveTokens(response);
         this.router.navigate(['/home']);
       },
       error: (error: HttpErrorResponse) => {
