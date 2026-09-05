@@ -41,6 +41,70 @@
   background-color: #a85e3a;
 }
 
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-filter {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  background-color: white;
+  border: 1px solid #ddd6cc;
+  border-radius: 8px;
+  color: #4b5563;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-filter:hover {
+  border-color: #c4714a;
+  color: #c4714a;
+}
+
+.btn-filter.active {
+  background-color: #f3ede6;
+  border-color: #c4714a;
+  color: #c4714a;
+}
+
+.btn-filter.has-filter {
+  border-color: #c4714a;
+}
+
+.filter-badge {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 7px;
+  height: 7px;
+  background-color: #c4714a;
+  border-radius: 50%;
+  border: 1.5px solid white;
+}
+
+.filter-panel {
+  animation: slideDown 0.2s ease-out;
+  margin-bottom: 0.5rem;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .home-search {
   position: relative;
   margin-bottom: 1rem;
@@ -60,7 +124,7 @@
   width: 100%;
   padding: 0.625rem 0.875rem 0.625rem 2.25rem;
   border: 1px solid #ddd6cc;
-  border-radius: 8px;
+  border-radius: 12px;
   font-size: 0.9rem;
   background-color: white;
   color: #1a1a1a;
@@ -145,14 +209,20 @@
   transform: translateY(-1px);
 }
 
+.item-header {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+}
+
 .item-icon {
-  width: 44px;
-  height: 44px;
+  width: 40px;
+  height: 40px;
   border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.25rem;
+  font-size: 1.1rem;
   color: white;
   flex-shrink: 0;
 }
@@ -166,8 +236,13 @@
   font-size: 0.9rem;
   font-weight: 700;
   color: #1a1a1a;
-  margin: 0 0 0.25rem;
-  word-break: break-word;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  flex: 1;
+  min-width: 0;
 }
 
 .item-category {

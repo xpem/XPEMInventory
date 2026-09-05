@@ -32,9 +32,11 @@
 ---------------------------------------- */
 html, body { height: 100%; }
 
+h1 { font-family: 'Boogaloo', 'Nunito', sans-serif; }
+
 body {
   margin: 0;
-  font-family: Roboto, 'Helvetica Neue', sans-serif;
+  font-family: 'Nunito', 'Helvetica Neue', sans-serif;
   background-color: var(--bg-app);
 }
 
@@ -59,10 +61,10 @@ body {
   width: 100%;
   padding: 0.625rem 0.875rem;
   border: 1px solid var(--border-color);
-  border-radius: 8px;
+  border-radius: 12px;
   font-size: 0.95rem;
   color: var(--color-text-primary);
-  background-color: var(--bg-input);
+  background-color: white;
   outline: none;
   transition: border-color 0.2s, box-shadow 0.2s;
   box-sizing: border-box;
@@ -89,10 +91,10 @@ body {
   width: 100%;
   padding: 0.625rem 0.875rem;
   border: 1px solid var(--border-color);
-  border-radius: 8px;
+  border-radius: 12px;
   font-size: 0.9rem;
   color: var(--color-text-primary);
-  background-color: var(--bg-input);
+  background-color: white;
   outline: none;
   transition: border-color 0.2s, box-shadow 0.2s;
   box-sizing: border-box;
@@ -203,9 +205,9 @@ body {
 }
 
 .form-section {
-  background-color: white;
+  background-color: #f3ede6;
   border: 1px solid var(--border-color-card);
-  border-radius: 12px;
+  border-radius: 16px;
   padding: 1.25rem;
   margin-bottom: 0.875rem;
 }

@@ -36,6 +36,7 @@ export class Home implements OnInit, OnDestroy {
 
   situationList = signal<UIItemSituation[]>([]);
   selectedSituationId = signal<number | null>(null);
+  showFilters = signal(false);
   searchText = '';
 
   ngOnInit() {
@@ -134,6 +135,10 @@ export class Home implements OnInit, OnDestroy {
     });
   }
 
+  toggleFilters() {
+    this.showFilters.update((v) => !v);
+  }
+
   selectSituation(id: number | null) {
     this.selectedSituationId.set(id);
     this.search();
@@ -178,7 +183,7 @@ export class Home implements OnInit, OnDestroy {
     if (id != null) this.router.navigate(['/item/edit'], { queryParams: { x: id } });
   }
 
-  private hasActiveSearch(): boolean {
+  hasActiveSearch(): boolean {
     return this.searchText.trim().length > 0 || this.selectedSituationId() !== null;
   }
 

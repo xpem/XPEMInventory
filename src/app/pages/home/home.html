@@ -1,31 +1,45 @@
 <!-- Cabeçalho -->
 <div class="home-header">
   <h1 class="home-title">Meus itens</h1>
-  <button type="button" class="btn-add-item" (click)="goToNewItem()">
-    <i class="bi bi-plus-lg"></i> Adicionar item
-  </button>
+  <div class="header-actions">
+    <button type="button" class="btn-filter" [class.active]="showFilters()" [class.has-filter]="hasActiveSearch()"
+      (click)="toggleFilters()" aria-label="Filtros">
+      <i class="bi bi-sliders"></i>
+      @if (hasActiveSearch()) {
+        <span class="filter-badge"></span>
+      }
+    </button>
+    <button type="button" class="btn-add-item" (click)="goToNewItem()">
+      <i class="bi bi-plus-lg"></i> Adicionar item
+    </button>
+  </div>
 </div>
 
-<!-- Barra de busca -->
-<div class="home-search">
-  <i class="bi bi-search search-icon"></i>
-  <input type="text" class="search-input" [(ngModel)]="searchText" placeholder="Buscar por nome ou categoria"
-    (keyup.enter)="search()" aria-label="Buscar itens" />
-</div>
+<!-- Painel de filtros (expansível) -->
+@if (showFilters()) {
+<div class="filter-panel">
+  <!-- Barra de busca -->
+  <div class="home-search">
+    <i class="bi bi-search search-icon"></i>
+    <input type="text" class="search-input" [(ngModel)]="searchText" placeholder="Buscar por nome ou categoria"
+      (keyup.enter)="search()" aria-label="Buscar itens" />
+  </div>
 
-<!-- Filtros por situação -->
-<div class="filter-pills">
-  <button class="filter-pill" [class.active]="selectedSituationId() === null" (click)="selectSituation(null)">
-    Todos
-  </button>
-  @for (situation of situationList(); track situation.id) {
-  <button class="filter-pill" [class.active]="selectedSituationId() === situation.id"
-    (click)="selectSituation(situation.id!)">
-    {{ situation.name }}
-    <span class="pill-count">{{ situation.quantity }}</span>
-  </button>
-  }
+  <!-- Filtros por situação -->
+  <div class="filter-pills">
+    <button class="filter-pill" [class.active]="selectedSituationId() === null" (click)="selectSituation(null)">
+      Todos
+    </button>
+    @for (situation of situationList(); track situation.id) {
+    <button class="filter-pill" [class.active]="selectedSituationId() === situation.id"
+      (click)="selectSituation(situation.id!)">
+      {{ situation.name }}
+      <span class="pill-count">{{ situation.quantity }}</span>
+    </button>
+    }
+  </div>
 </div>
+}
 
 <!-- Grid de itens -->
 @if (items().length > 0) {
@@ -33,12 +47,14 @@
   @for (item of items(); track item.id) {
   <div class="item-card" (click)="goToItem(item.id)" role="button" [attr.aria-label]="'Ver item ' + item.name"
     tabindex="0" (keyup.enter)="goToItem(item.id)">
-    <div class="item-icon" [style.background-color]="item.category?.color ?? '#c4714a'" aria-hidden="true">
-      <i [class]="'bi bi-' + item.subCategoryIcon"></i>
+    <div class="item-header">
+      <div class="item-icon" [style.background-color]="item.category?.color ?? '#c4714a'" aria-hidden="true">
+        <i [class]="'bi bi-' + item.subCategoryIcon"></i>
+      </div>
+      <p class="item-name">{{ item.name }}</p>
     </div>
 
     <div class="item-content">
-      <p class="item-name">{{ item.name }}</p>
       <p class="item-category">{{ item.categoryAndSubCategory }}</p>
 
       <div class="item-meta">
