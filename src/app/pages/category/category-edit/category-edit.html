@@ -1,21 +1,21 @@
 <!-- Loading -->
 @if (isLoading()) {
-  <div class="d-flex justify-content-center my-5">
-    <div class="spinner-border" style="color: var(--primary-green)" role="status">
+  <div class="loading-center">
+    <div class="spinner-border spinner-coral" role="status">
       <span class="visually-hidden">Carregando...</span>
     </div>
   </div>
 } @else {
 
   <!-- Barra de topo -->
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <button type="button" class="btn btn-sm btn-outline-secondary" (click)="goBack()">
-      <i class="bi bi-arrow-left"></i>&nbsp;&nbsp;Voltar
+  <div class="edit-topbar">
+    <button type="button" class="btn-back" (click)="goBack()">
+      <i class="bi bi-arrow-left"></i> Voltar
     </button>
     @if (!isInsert() && !isSystemDefault()) {
       <button
         type="button"
-        class="btn btn-sm btn-outline-danger"
+        class="btn-delete"
         data-bs-toggle="modal"
         data-bs-target="#deleteCategoryModal"
         (click)="confirmDeleteCategory()"
@@ -25,218 +25,202 @@
     }
   </div>
 
-  <h5 style="color: var(--primary-green)">
-    {{ isInsert() ? 'Nova Categoria' : 'Editar Categoria' }}
-  </h5>
+  <h1 class="edit-title">{{ isInsert() ? 'Nova categoria' : 'Editar categoria' }}</h1>
 
   <!-- Formulário da categoria -->
-  <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate class="mb-4">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+    <div class="form-section">
 
-    <!-- Nome -->
-    <div class="mb-3">
-      <label for="inputCatName" class="form-label">Nome <span class="text-danger">*</span></label>
-      <input
-        type="text"
-        class="form-control"
-        id="inputCatName"
-        formControlName="name"
-        [class.is-invalid]="f['name'].touched && f['name'].errors"
-      />
-      @if (f['name'].touched && f['name'].errors) {
-        <div class="invalid-feedback">
-          @if (f['name'].errors['required']) { Nome é obrigatório. }
-          @if (f['name'].errors['maxlength']) { Máximo de 150 caracteres. }
-        </div>
-      }
-    </div>
+      <!-- Nome -->
+      <div class="field-group">
+        <label for="inputCatName" class="field-label">Nome</label>
+        <input
+          type="text"
+          class="field-input"
+          id="inputCatName"
+          formControlName="name"
+          placeholder="Nome da categoria"
+          [class.field-error-border]="f['name'].touched && f['name'].errors"
+        />
+        @if (f['name'].touched && f['name'].errors) {
+          <div class="field-error">
+            @if (f['name'].errors['required']) { Nome é obrigatório. }
+            @if (f['name'].errors['maxlength']) { Máximo de 150 caracteres. }
+          </div>
+        }
+      </div>
 
-    <!-- Cor -->
-    <div class="mb-4">
-      <label class="form-label d-block">Cor</label>
-
-      @if (!colorPickerOpen()) {
-        <!-- Exibe a cor selecionada — clica para abrir a paleta -->
-        <div
-          class="color-swatch"
-          [style.background]="selectedColor()"
-          (click)="openColorPicker()"
-          title="Clique para mudar a cor"
-          role="button"
-          aria-label="Cor selecionada, clique para alterar"
-        ></div>
-      } @else {
-        <!-- Paleta de cores -->
-        <div class="d-flex flex-wrap gap-2">
-          @for (color of COLOR_PALETTE; track color) {
+      <!-- Cor -->
+      <div class="field-group">
+        <label class="field-label">Cor</label>
+        @if (!colorPickerOpen()) {
+          <div class="color-preview-row">
             <div
               class="color-swatch"
-              [class.selected]="selectedColor() === color"
-              [style.background]="color"
-              (click)="selectColor(color)"
-              [title]="color"
+              [style.background-color]="selectedColor()"
+              (click)="openColorPicker()"
+              title="Clique para mudar a cor"
               role="button"
-              [attr.aria-label]="'Selecionar cor ' + color"
+              aria-label="Cor selecionada, clique para alterar"
             ></div>
-          }
-        </div>
-      }
-    </div>
-
-    <!-- Botão salvar categoria -->
-    <div class="d-grid">
-      @if (!isSaving()) {
-        @if (isInsert()) {
-          <button type="submit" class="btn btn-primary">
-            <i class="bi bi-plus-lg"></i>&nbsp;&nbsp;Cadastrar
-          </button>
+            <span class="color-hint">Clique para alterar</span>
+          </div>
         } @else {
-          <button type="submit" class="btn btn-warning">
-            <i class="bi bi-pencil"></i>&nbsp;&nbsp;Alterar
-          </button>
+          <div class="color-palette">
+            @for (color of COLOR_PALETTE; track color) {
+              <div
+                class="color-swatch"
+                [class.selected]="selectedColor() === color"
+                [style.background-color]="color"
+                (click)="selectColor(color)"
+                [title]="color"
+                role="button"
+                [attr.aria-label]="'Selecionar cor ' + color"
+              ></div>
+            }
+          </div>
         }
+      </div>
+
+      <!-- Botão salvar -->
+      @if (!isSaving()) {
+        <button type="submit" class="btn-save">
+          @if (isInsert()) {
+            <i class="bi bi-plus-lg"></i> Cadastrar
+          } @else {
+            <i class="bi bi-check-lg"></i> Salvar alterações
+          }
+        </button>
       } @else {
-        <button type="button" class="btn btn-secondary" disabled>
-          <span class="spinner-grow spinner-grow-sm" aria-hidden="true"></span>
-          &nbsp;&nbsp;Salvando...
+        <button type="button" class="btn-save" disabled>
+          <span class="spinner-grow spinner-grow-sm" aria-hidden="true"></span> Salvando...
         </button>
       }
     </div>
   </form>
 
-  <!-- -------------------------------------------------------
-       Subcategorias (apenas no modo edição)
-  ------------------------------------------------------- -->
+  <!-- Subcategorias (apenas em edição) -->
   @if (!isInsert()) {
-    <hr style="border-color: var(--border-color)" />
-    <div class="d-flex justify-content-between align-items-center mb-3">
-      <h6 class="mb-0" style="color: var(--text-light)">Subcategorias</h6>
-      @if (!subFormVisible()) {
-        <button type="button" class="btn btn-sm btn-success" (click)="openNewSubForm()">
-          <i class="bi bi-plus-lg"></i> Adicionar
-        </button>
-      }
-    </div>
-
-    <!-- Lista de subcategorias existentes -->
-    @for (sub of subCategories(); track sub.id) {
-      <div class="sub-card d-flex align-items-center gap-3 mb-2">
-        <div
-          class="category-circle-md flex-shrink-0 d-flex justify-content-center align-items-center"
-          [style.background]="selectedColor()"
-        >
-          <i class="bi bi-{{ sub.iconName ?? 'tag' }}" style="font-size: 18px; color: white"></i>
-        </div>
-        <span class="flex-grow-1" style="color: var(--text-light)">{{ sub.name }}</span>
-        @if (!sub.systemDefault) {
-          <button
-            type="button"
-            class="btn btn-sm btn-outline-warning"
-            (click)="openEditSubForm(sub)"
-            title="Editar"
-          >
-            <i class="bi bi-pencil"></i>
-          </button>
-          <button
-            type="button"
-            class="btn btn-sm btn-outline-danger"
-            data-bs-toggle="modal"
-            data-bs-target="#deleteSubModal"
-            (click)="confirmDeleteSub(sub.id)"
-            title="Excluir"
-          >
-            <i class="bi bi-trash"></i>
+    <div class="sub-section">
+      <div class="sub-section-header">
+        <h2 class="sub-section-title">Subcategorias</h2>
+        @if (!subFormVisible()) {
+          <button type="button" class="btn-add-sub" (click)="openNewSubForm()">
+            <i class="bi bi-plus-lg"></i> Adicionar
           </button>
         }
       </div>
-    }
 
-    @if (subCategories().length === 0 && !subFormVisible()) {
-      <p style="color: var(--text-muted); font-size: 0.875rem">
-        Nenhuma subcategoria cadastrada.
-      </p>
-    }
-
-    <!-- Formulário inline de subcategoria -->
-    @if (subFormVisible()) {
-      <div class="card card-custom mt-3 p-3" [formGroup]="subForm">
-        <div class="mb-3">
-          <label for="inputSubName" class="form-label" style="color: var(--text-light)">
-            Nome da Subcategoria <span class="text-danger">*</span>
-          </label>
-          <input
-            type="text"
-            class="form-control"
-            id="inputSubName"
-            formControlName="subName"
-            [class.is-invalid]="sf['subName'].touched && sf['subName'].errors"
-          />
-          @if (sf['subName'].touched && sf['subName'].errors) {
-            <div class="invalid-feedback">Nome é obrigatório.</div>
+      <!-- Lista de subcategorias -->
+      @for (sub of subCategories(); track sub.id) {
+        <div class="sub-item">
+          <div class="sub-item-icon" [style.background-color]="selectedColor()">
+            <i [class]="'bi bi-' + (sub.iconName ?? 'tag')"></i>
+          </div>
+          <span class="sub-item-name">{{ sub.name }}</span>
+          @if (!sub.systemDefault) {
+            <div class="sub-item-actions">
+              <button
+                type="button"
+                class="btn-icon-action"
+                (click)="openEditSubForm(sub)"
+                title="Editar"
+              >
+                <i class="bi bi-pencil"></i>
+              </button>
+              <button
+                type="button"
+                class="btn-icon-action danger"
+                data-bs-toggle="modal"
+                data-bs-target="#deleteSubModal"
+                (click)="confirmDeleteSub(sub.id)"
+                title="Excluir"
+              >
+                <i class="bi bi-trash"></i>
+              </button>
+            </div>
           }
         </div>
+      }
 
-        <!-- Ícone -->
-        <div class="mb-3">
-          <label class="form-label d-block" style="color: var(--text-light)">Ícone</label>
+      @if (subCategories().length === 0 && !subFormVisible()) {
+        <p class="sub-empty">Nenhuma subcategoria cadastrada.</p>
+      }
 
-          @if (!iconPickerOpen()) {
-            <div
-              class="icon-option selected"
-              (click)="iconPickerOpen.set(true)"
-              style="display: inline-flex"
-              title="Clique para trocar ícone"
-              role="button"
-            >
-              <i class="bi bi-{{ selectedSubIcon() }}"></i>
-            </div>
-          } @else {
-            <div class="d-flex flex-wrap gap-2">
-              @for (icon of BI_ICONS; track icon) {
+      <!-- Formulário inline de subcategoria -->
+      @if (subFormVisible()) {
+        <div class="sub-form" [formGroup]="subForm">
+          <div class="field-group">
+            <label for="inputSubName" class="field-label">Nome da subcategoria</label>
+            <input
+              type="text"
+              class="field-input"
+              id="inputSubName"
+              formControlName="subName"
+              placeholder="Ex.: Eletrônicos"
+              [class.field-error-border]="sf['subName'].touched && sf['subName'].errors"
+            />
+            @if (sf['subName'].touched && sf['subName'].errors) {
+              <div class="field-error">Nome é obrigatório.</div>
+            }
+          </div>
+
+          <!-- Ícone -->
+          <div class="field-group">
+            <label class="field-label">Ícone</label>
+            @if (!iconPickerOpen()) {
+              <div class="icon-preview-row">
                 <div
-                  class="icon-option"
-                  [class.selected]="selectedSubIcon() === icon"
-                  (click)="selectSubIcon(icon)"
-                  [title]="icon"
+                  class="icon-option selected"
+                  (click)="iconPickerOpen.set(true)"
                   role="button"
-                  [attr.aria-label]="'Ícone ' + icon"
+                  title="Clique para trocar ícone"
                 >
-                  <i class="bi bi-{{ icon }}"></i>
+                  <i [class]="'bi bi-' + selectedSubIcon()"></i>
                 </div>
-              }
-            </div>
-          }
-        </div>
+                <span class="color-hint">Clique para alterar</span>
+              </div>
+            } @else {
+              <div class="icon-palette">
+                @for (icon of BI_ICONS; track icon) {
+                  <div
+                    class="icon-option"
+                    [class.selected]="selectedSubIcon() === icon"
+                    (click)="selectSubIcon(icon)"
+                    [title]="icon"
+                    role="button"
+                    [attr.aria-label]="'Ícone ' + icon"
+                  >
+                    <i [class]="'bi bi-' + icon"></i>
+                  </div>
+                }
+              </div>
+            }
+          </div>
 
-        <!-- Botões do sub form -->
-        <div class="d-flex gap-2">
-          <button
-            type="button"
-            class="btn btn-secondary btn-sm"
-            (click)="cancelSubForm()"
-          >
-            Cancelar
-          </button>
-          @if (!isSavingSub()) {
-            <button
-              type="button"
-              class="btn btn-primary btn-sm"
-              (click)="saveSubCategory()"
-            >
-              <i class="bi bi-check-lg"></i>
-              {{ editingSubId() ? 'Atualizar' : 'Adicionar' }}
+          <!-- Ações do subform -->
+          <div class="sub-form-actions">
+            <button type="button" class="btn-cancel" (click)="cancelSubForm()">
+              Cancelar
             </button>
-          } @else {
-            <button type="button" class="btn btn-secondary btn-sm" disabled>
-              <span class="spinner-grow spinner-grow-sm" aria-hidden="true"></span>
-            </button>
-          }
+            @if (!isSavingSub()) {
+              <button type="button" class="btn-save-sub" (click)="saveSubCategory()">
+                <i class="bi bi-check-lg"></i>
+                {{ editingSubId() ? 'Atualizar' : 'Adicionar' }}
+              </button>
+            } @else {
+              <button type="button" class="btn-save-sub" disabled>
+                <span class="spinner-grow spinner-grow-sm" aria-hidden="true"></span>
+              </button>
+            }
+          </div>
         </div>
-      </div>
-    }
+      }
+    </div>
   }
 }
 
-<!-- Modal confirmar exclusão de categoria -->
+<!-- Modal: excluir categoria -->
 <div
   class="modal fade"
   id="deleteCategoryModal"
@@ -246,22 +230,18 @@
   aria-hidden="true"
 >
   <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content background-custom">
-      <div class="modal-header" style="background-color: var(--bs-danger)">
-        <h5 class="modal-title text-white" id="deleteCategoryModalLabel">
-          Excluir Categoria?
-        </h5>
+    <div class="modal-content modal-light">
+      <div class="modal-header modal-header-danger">
+        <h5 class="modal-title" id="deleteCategoryModalLabel">Excluir categoria?</h5>
       </div>
-      <div class="modal-body" style="color: var(--text-light)">
+      <div class="modal-body modal-body-light">
         Esta ação não pode ser desfeita.
       </div>
-      <div class="modal-footer" style="border-top-color: var(--border-color)">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-          Cancelar
-        </button>
+      <div class="modal-footer modal-footer-light">
+        <button type="button" class="btn-cancel" data-bs-dismiss="modal">Cancelar</button>
         <button
           type="button"
-          class="btn btn-danger"
+          class="btn-modal-danger"
           data-bs-dismiss="modal"
           (click)="deleteCategory()"
         >
@@ -272,7 +252,7 @@
   </div>
 </div>
 
-<!-- Modal confirmar exclusão de subcategoria -->
+<!-- Modal: excluir subcategoria -->
 <div
   class="modal fade"
   id="deleteSubModal"
@@ -282,22 +262,18 @@
   aria-hidden="true"
 >
   <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content background-custom">
-      <div class="modal-header" style="background-color: var(--bs-danger)">
-        <h5 class="modal-title text-white" id="deleteSubModalLabel">
-          Excluir Subcategoria?
-        </h5>
+    <div class="modal-content modal-light">
+      <div class="modal-header modal-header-danger">
+        <h5 class="modal-title" id="deleteSubModalLabel">Excluir subcategoria?</h5>
       </div>
-      <div class="modal-body" style="color: var(--text-light)">
+      <div class="modal-body modal-body-light">
         Esta ação não pode ser desfeita.
       </div>
-      <div class="modal-footer" style="border-top-color: var(--border-color)">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-          Cancelar
-        </button>
+      <div class="modal-footer modal-footer-light">
+        <button type="button" class="btn-cancel" data-bs-dismiss="modal">Cancelar</button>
         <button
           type="button"
-          class="btn btn-danger"
+          class="btn-modal-danger"
           data-bs-dismiss="modal"
           (click)="deleteSub()"
         >

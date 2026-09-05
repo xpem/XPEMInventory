@@ -1,59 +1,64 @@
 <div
-  class="offcanvas offcanvas-start text-bg-dark sidebar"
+  class="offcanvas offcanvas-start sidebar-light"
   tabindex="-1"
   id="offcanvasSidebar"
   aria-labelledby="offcanvasSidebarLabel"
 >
-  <div
-    class="offcanvas-header"
-    style="
-      background: radial-gradient(circle at top right, #1ca64f 0%, #006370 100%);
-      border-radius: 10px;
-    "
-  >
-    @if (userName()) {
-      <div>
-        <div style="font-weight: 600; font-size: 0.9rem">{{ userName() }}</div>
-        <div style="font-size: 0.8rem; opacity: 0.65">{{ userEmail() }}</div>
-      </div>
-    }
+  <!-- Brand -->
+  <div class="sidebar-brand">
+    <span class="sidebar-brand-dot"></span>
+    <span class="sidebar-brand-name" id="offcanvasSidebarLabel">Xpem</span>
+    <button
+      type="button"
+      class="sidebar-close"
+      data-bs-dismiss="offcanvas"
+      aria-label="Fechar"
+    >
+      <i class="bi bi-x"></i>
+    </button>
   </div>
 
-  <div class="offcanvas-body">
-    <ul class="nav navbar-nav justify-content-end flex-grow-1">
-      <li class="nav-item">
-        <a
-          class="nav-link"
-          routerLink="/home"
-          routerLinkActive="active"
-          [routerLinkActiveOptions]="{ exact: true }"
-          data-bs-dismiss="offcanvas"
-          aria-label="Close"
-        >
-          <i class="bi bi-house"></i> Principal
-        </a>
-      </li>
-      <li class="nav-item">
-        <a
-          class="nav-link"
-          routerLink="/category/list"
-          routerLinkActive="active"
-          [routerLinkActiveOptions]="{ exact: false }"
-          data-bs-dismiss="offcanvas"
-          aria-label="Close"
-        >
-          <i class="bi bi-tags"></i> Categorias
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link logout-link" (click)="onLogout()">
-          <i class="bi bi-box-arrow-left"></i> Sair
-        </a>
-      </li>
-    </ul>
+  <!-- Nav -->
+  <nav class="sidebar-nav">
+    <a
+      class="sidebar-nav-link"
+      routerLink="/home"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+      data-bs-dismiss="offcanvas"
+    >
+      <i class="bi bi-house"></i>
+      <span>Home</span>
+    </a>
+    <a
+      class="sidebar-nav-link"
+      routerLink="/category/list"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: false }"
+      data-bs-dismiss="offcanvas"
+    >
+      <i class="bi bi-tags"></i>
+      <span>Categorias</span>
+    </a>
+  </nav>
 
-    <div class="nav-item version-label">
-      <span>Versão 1.0</span>
-    </div>
+  <!-- Footer: usuário + sair + versão -->
+  <div class="sidebar-footer">
+    @if (userName()) {
+      <div class="sidebar-user">
+        <div class="sidebar-user-avatar">{{ userInitials() }}</div>
+        <div class="sidebar-user-info">
+          <div class="sidebar-user-name">{{ userName() }}</div>
+          <div class="sidebar-user-email">{{ userEmail() }}</div>
+        </div>
+      </div>
+    }
+
+    <button class="sidebar-logout" (click)="onLogout()">
+      <i class="bi bi-box-arrow-right"></i>
+      <span>Sair</span>
+    </button>
+
+    <div class="sidebar-version">Versão 1.0</div>
   </div>
 </div>

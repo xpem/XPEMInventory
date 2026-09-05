@@ -1,206 +1,214 @@
 <!-- Loading -->
 @if (isLoading()) {
-  <div class="d-flex justify-content-center my-5">
-    <div class="spinner-border" style="color: var(--primary-green)" role="status">
+  <div class="loading-center">
+    <div class="spinner-border spinner-coral" role="status">
       <span class="visually-hidden">Carregando...</span>
     </div>
   </div>
 } @else {
-  <!-- Barra de topo -->
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <button type="button" class="btn btn-sm btn-outline-secondary" (click)="goBack()">
-      <i class="bi bi-arrow-left"></i>&nbsp;&nbsp;Voltar
+
+  <!-- Topbar -->
+  <div class="edit-topbar">
+    <button type="button" class="btn-back" (click)="goBack()">
+      <i class="bi bi-arrow-left"></i> Voltar
     </button>
   </div>
 
   <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
 
-    <!-- Nome -->
-    <div class="mb-3">
-      <label for="inputName" class="form-label">Nome <span class="text-danger">*</span></label>
-      <input
-        type="text"
-        class="form-control"
-        id="inputName"
-        formControlName="name"
-        [class.is-invalid]="f['name'].touched && f['name'].errors"
-      />
-      @if (f['name'].touched && f['name'].errors) {
-        <div class="invalid-feedback">
-          @if (f['name'].errors['required']) { Nome é obrigatório. }
-          @if (f['name'].errors['maxlength']) { Máximo de 249 caracteres. }
-        </div>
-      }
-    </div>
+    <!-- Seção: informações básicas -->
+    <div class="form-section">
 
-    <!-- Categoria + Situação -->
-    <div class="row mb-3">
-      <div class="col-sm-6 mb-3 mb-sm-0">
-        <label class="form-label">Categoria <span class="text-danger">*</span></label>
+      <!-- Nome -->
+      <div class="field-group">
+        <label for="inputName" class="field-label">Nome</label>
+        <input
+          type="text"
+          class="field-input"
+          id="inputName"
+          formControlName="name"
+          placeholder="Nome do item"
+          [class.field-error-border]="f['name'].touched && f['name'].errors"
+        />
+        @if (f['name'].touched && f['name'].errors) {
+          <div class="field-error">
+            @if (f['name'].errors['required']) { Nome é obrigatório. }
+            @if (f['name'].errors['maxlength']) { Máximo de 249 caracteres. }
+          </div>
+        }
+      </div>
+
+      <!-- Categoria -->
+      <div class="field-group">
+        <label class="field-label">Categoria</label>
         <button
           type="button"
-          class="btn btn-success w-100"
+          class="cat-select-btn"
           data-bs-toggle="modal"
           data-bs-target="#modalCategories"
           aria-label="Selecionar categoria"
         >
-          {{ categoryBtnLabel() }}
+          <span>{{ categoryBtnLabel() }}</span>
+          <i class="bi bi-chevron-right"></i>
         </button>
         @if (categoryError()) {
-          <div class="text-danger mt-1" style="font-size: 0.875em">{{ categoryError() }}</div>
+          <div class="field-error">{{ categoryError() }}</div>
         }
       </div>
-      <div class="col-sm-6">
-        <label for="inputSituation" class="form-label">Situação <span class="text-danger">*</span></label>
-        <select class="form-select" id="inputSituation" formControlName="situationId">
+
+      <!-- Situação -->
+      <div class="field-group">
+        <label for="inputSituation" class="field-label">Situação</label>
+        <select class="field-select" id="inputSituation" formControlName="situationId">
           @for (s of situations(); track s.id) {
             <option [value]="s.id">{{ s.name }}</option>
           }
         </select>
         @if (situationError()) {
-          <div class="text-danger mt-1" style="font-size: 0.875em">{{ situationError() }}</div>
+          <div class="field-error">{{ situationError() }}</div>
         }
       </div>
     </div>
 
-    <!-- Campos condicionais de revenda -->
-    @if (isResale) {
-      <div class="card card-custom mb-3">
-        <div class="card-body">
-          <div class="card-title mb-3">Revenda</div>
-          <div class="row">
-            <div class="col-sm-6 mb-3 mb-sm-0">
-              <label for="inputResaleValue" class="form-label">Valor de Revenda</label>
-              <div class="input-group">
-                <span class="input-group-text">R$</span>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="inputResaleValue"
-                  formControlName="resaleValue"
-                  placeholder="0,00"
-                  inputmode="numeric"
-                  (input)="onCurrencyInput($event)"
-                />
-              </div>
-            </div>
-            <div class="col-sm-6">
-              <label for="inputWithdrawalDate" class="form-label">Data de Retirada</label>
-              <input
-                type="date"
-                class="form-control"
-                id="inputWithdrawalDate"
-                formControlName="withdrawalDate"
-              />
-            </div>
-          </div>
+    <!-- Seção: Aquisição -->
+    <div class="form-section">
+      <h2 class="section-title">Aquisição</h2>
+
+      <div class="field-row">
+        <div class="field-group">
+          <label for="inputAcquisitionType" class="field-label">Tipo</label>
+          <select class="field-select" id="inputAcquisitionType" formControlName="acquisitionTypeId">
+            @for (t of acquisitionTypes(); track t.id) {
+              <option [value]="t.id">{{ t.name }}</option>
+            }
+          </select>
+          @if (acquisitionTypeError()) {
+            <div class="field-error">{{ acquisitionTypeError() }}</div>
+          }
+        </div>
+
+        <div class="field-group">
+          <label for="inputAcquisitionDate" class="field-label">Data</label>
+          <input
+            type="date"
+            class="field-input"
+            id="inputAcquisitionDate"
+            formControlName="acquisitionDate"
+          />
         </div>
       </div>
-    }
 
-    <!-- Aquisição -->
-    <div class="card card-custom mb-3">
-      <div class="card-body">
-        <div class="card-title mb-3">Aquisição</div>
-        <div class="row">
-          <div class="col-sm-6 mb-3 mb-sm-0">
-            <label for="inputAcquisitionType" class="form-label">
-              Tipo <span class="text-danger">*</span>
-            </label>
-            <select class="form-select" id="inputAcquisitionType" formControlName="acquisitionTypeId">
-              @for (t of acquisitionTypes(); track t.id) {
-                <option [value]="t.id">{{ t.name }}</option>
-              }
-            </select>
-            @if (acquisitionTypeError()) {
-              <div class="text-danger mt-1" style="font-size: 0.875em">{{ acquisitionTypeError() }}</div>
-            }
-          </div>
-          <div class="col-sm-6">
-            <label for="inputAcquisitionDate" class="form-label">Data</label>
+      <div class="field-row">
+        <div class="field-group">
+          <label for="inputPurchaseValue" class="field-label">Valor</label>
+          <div class="currency-group">
+            <span class="currency-prefix">R$</span>
             <input
-              type="date"
-              class="form-control"
-              id="inputAcquisitionDate"
-              formControlName="acquisitionDate"
+              type="text"
+              class="field-input currency-input"
+              id="inputPurchaseValue"
+              formControlName="purchaseValue"
+              placeholder="0,00"
+              inputmode="numeric"
+              (input)="onCurrencyInput($event)"
             />
           </div>
         </div>
 
-        <div class="row mt-3">
-          <div class="col-sm-6 mb-3 mb-sm-0">
-            <label for="inputPurchaseValue" class="form-label">Valor</label>
-            <div class="input-group">
-              <span class="input-group-text">R$</span>
+        <div class="field-group">
+          <label for="inputPurchaseStore" class="field-label">Loja</label>
+          <input
+            type="text"
+            class="field-input store-datalist-input"
+            id="inputPurchaseStore"
+            formControlName="purchaseStore"
+            list="storesList"
+            autocomplete="off"
+            placeholder="Ex: Amazon"
+          />
+          <datalist id="storesList">
+            @for (store of lastPurchaseStores(); track store) {
+              <option [value]="store"></option>
+            }
+          </datalist>
+        </div>
+      </div>
+    </div>
+
+    <!-- Seção: Revenda (condicional) -->
+    @if (isResale) {
+      <div class="form-section">
+        <h2 class="section-title">Revenda</h2>
+
+        <div class="field-row">
+          <div class="field-group">
+            <label for="inputResaleValue" class="field-label">Valor de Revenda</label>
+            <div class="currency-group">
+              <span class="currency-prefix">R$</span>
               <input
                 type="text"
-                class="form-control"
-                id="inputPurchaseValue"
-                formControlName="purchaseValue"
+                class="field-input currency-input"
+                id="inputResaleValue"
+                formControlName="resaleValue"
                 placeholder="0,00"
                 inputmode="numeric"
                 (input)="onCurrencyInput($event)"
               />
             </div>
           </div>
-          <div class="col-sm-6">
-            <label for="inputPurchaseStore" class="form-label">Loja</label>
+
+          <div class="field-group">
+            <label for="inputWithdrawalDate" class="field-label">Data de Retirada</label>
             <input
-              type="text"
-              class="form-control store-datalist-input"
-              id="inputPurchaseStore"
-              formControlName="purchaseStore"
-              list="storesList"
-              autocomplete="off"
-              placeholder="Ex: Amazon"
+              type="date"
+              class="field-input"
+              id="inputWithdrawalDate"
+              formControlName="withdrawalDate"
             />
-            <datalist id="storesList">
-              @for (store of lastPurchaseStores(); track store) {
-                <option [value]="store"></option>
-              }
-            </datalist>
           </div>
         </div>
       </div>
+    }
+
+    <!-- Seção: Detalhes -->
+    <div class="form-section">
+      <div class="field-group">
+        <label for="inputTechDesc" class="field-label">Descrição técnica</label>
+        <textarea
+          class="field-input"
+          id="inputTechDesc"
+          formControlName="technicalDescription"
+          rows="2"
+          placeholder="Especificações, modelo, número de série..."
+        ></textarea>
+      </div>
+
+      <div class="field-group" style="margin-bottom: 0">
+        <label for="inputComment" class="field-label">Comentários</label>
+        <textarea
+          class="field-input"
+          id="inputComment"
+          formControlName="comment"
+          rows="2"
+          placeholder="Observações gerais..."
+        ></textarea>
+      </div>
     </div>
 
-    <!-- Descrição técnica -->
-    <div class="mb-3">
-      <label for="inputTechDesc" class="form-label">Descrição técnica</label>
-      <textarea
-        class="form-control"
-        id="inputTechDesc"
-        formControlName="technicalDescription"
-        rows="2"
-      ></textarea>
-    </div>
-
-    <!-- Comentários -->
-    <div class="mb-3">
-      <label for="inputComment" class="form-label">Comentários</label>
-      <textarea
-        class="form-control"
-        id="inputComment"
-        formControlName="comment"
-        rows="2"
-      ></textarea>
-    </div>
-
-    <!-- Foto -->
-    <hr class="mt-2" style="border-color: var(--border-color)" />
-    <div class="mb-5">
+    <!-- Seção: Foto -->
+    <div class="form-section photo-section">
       @if (!imageDataUrl()) {
-        <div class="d-flex flex-wrap gap-2 justify-content-center">
+        <div class="photo-actions">
           <button
             type="button"
-            class="btn btn-outline-secondary"
+            class="btn-photo"
             (click)="openCamera()"
           >
             <i class="bi bi-camera"></i> Câmera
           </button>
           <button
             type="button"
-            class="btn btn-outline-secondary"
+            class="btn-photo"
             data-bs-toggle="modal"
             data-bs-target="#modalSelectFile"
           >
@@ -208,41 +216,33 @@
           </button>
         </div>
       } @else {
-        <div class="d-flex flex-column align-items-center gap-2">
-          <img
-            [src]="imageDataUrl()"
-            class="img-thumbnail"
-            style="max-width: 400px; width: 100%"
-            alt="Imagem do item"
-          />
-          <button
-            type="button"
-            class="btn btn-danger"
-            style="max-width: 400px; width: 100%"
-            (click)="deleteImage()"
-          >
-            <i class="bi bi-trash"></i> Remover Foto
+        <div class="photo-preview">
+          <img [src]="imageDataUrl()" alt="Imagem do item" />
+          <button type="button" class="btn-remove-photo" (click)="deleteImage()">
+            <i class="bi bi-trash"></i> Remover foto
           </button>
         </div>
       }
     </div>
 
-    <!-- Botão de salvar fixo no canto -->
+    <!-- Espaço para o botão fixo não cobrir conteúdo -->
+    <div style="height: 80px"></div>
+
+    <!-- Botão salvar fixo -->
     <div class="save-btn-container">
       @if (!isSaving()) {
         @if (isInsert()) {
-          <button type="submit" class="btn btn-primary btn-lg shadow">
-            <i class="bi bi-plus-lg"></i>&nbsp;&nbsp;Cadastrar
+          <button type="submit" class="btn-save-fixed">
+            <i class="bi bi-plus-lg"></i> Cadastrar
           </button>
         } @else {
-          <button type="submit" class="btn btn-warning btn-lg shadow">
-            <i class="bi bi-pencil"></i>&nbsp;&nbsp;Alterar
+          <button type="submit" class="btn-save-fixed">
+            <i class="bi bi-check-lg"></i> Salvar
           </button>
         }
       } @else {
-        <button type="button" class="btn btn-secondary btn-lg" disabled>
-          <span class="spinner-grow spinner-grow-sm" aria-hidden="true"></span>
-          &nbsp;&nbsp;Salvando...
+        <button type="button" class="btn-save-fixed" disabled>
+          <span class="spinner-grow spinner-grow-sm" aria-hidden="true"></span> Salvando...
         </button>
       }
     </div>

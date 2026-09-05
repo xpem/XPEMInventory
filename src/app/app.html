@@ -5,22 +5,19 @@
     <app-sidebar />
   }
 
-  <div class="content p-4">
+  <div [class]="authService.isAuthenticated() ? 'content authenticated-area' : 'content'">
     @if (authService.isAuthenticated()) {
-      <div class="d-flex align-items-center mb-3">
-        <!-- Botão para abrir a sidebar (offcanvas) -->
+      <div class="app-topbar">
         <button
-          class="btn btn-outline-secondary me-3"
+          class="sidebar-toggle"
           type="button"
           data-bs-toggle="offcanvas"
           data-bs-target="#offcanvasSidebar"
           aria-controls="offcanvasSidebar"
           aria-label="Abrir menu"
         >
-          <i class="bi bi-layout-sidebar"></i>
+          <i class="bi bi-list"></i>
         </button>
-
-        <h5 class="mb-0" [innerHTML]="pageTitle()"></h5>
       </div>
     }
 

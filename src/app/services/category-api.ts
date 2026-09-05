@@ -23,8 +23,8 @@ export class CategoryApiService {
   }
 
   /** GET /Inventory/category/:id/subcategory — uma categoria com suas subcategorias */
-  getWithSubCategories(id: number): Observable<CategoryDTO> {
-    return this.http.get<CategoryDTO>(`${this.base}/${id}/subcategory`);
+  getWithSubCategories(id: number): Observable<CategoryDTO[]> {
+    return this.http.get<CategoryDTO[]>(`${this.base}/${id}/subcategory`);
   }
 
   /** GET /Inventory/category/:id */

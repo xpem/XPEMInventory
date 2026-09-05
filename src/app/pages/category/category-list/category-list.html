@@ -1,55 +1,50 @@
-<!-- Header -->
-<div class="d-flex justify-content-between align-items-center mb-4">
-  <h5 class="mb-0" style="color: var(--primary-green)">Categorias</h5>
-  <button type="button" class="btn btn-success btn-sm" (click)="goToNew()">
-    <i class="bi bi-plus-lg"></i>&nbsp;&nbsp;Nova Categoria
+<!-- Cabeçalho -->
+<div class="cat-header">
+  <h1 class="cat-title">Categorias</h1>
+  <button type="button" class="btn-add-cat" (click)="goToNew()">
+    <i class="bi bi-plus-lg"></i> Nova categoria
   </button>
 </div>
 
 <!-- Loading -->
 @if (isLoading()) {
-  <div class="d-flex justify-content-center my-5">
-    <div class="spinner-border" style="color: var(--primary-green)" role="status">
+  <div class="loading-center">
+    <div class="spinner-border spinner-coral" role="status">
       <span class="visually-hidden">Carregando...</span>
     </div>
   </div>
 }
 
-<!-- Lista -->
+<!-- Empty state -->
 @if (!isLoading() && categories().length === 0) {
-  <div class="text-center my-5" style="color: var(--text-muted)">
-    <i class="bi bi-tags" style="font-size: 3rem"></i>
-    <p class="mt-2">Nenhuma categoria encontrada.</p>
+  <div class="empty-state">
+    <i class="bi bi-tags"></i>
+    <p>Nenhuma categoria encontrada.</p>
   </div>
 }
 
+<!-- Lista -->
 @if (!isLoading() && categories().length > 0) {
-  <div class="list-group">
+  <div class="cat-list">
     @for (cat of categories(); track cat.id) {
       <button
         type="button"
-        class="list-group-item list-group-item-action d-flex align-items-center gap-3"
+        class="cat-item"
         (click)="goToEdit(cat.id)"
-        style="background-color: var(--bg-card); color: var(--text-light); border-color: var(--border-color)"
       >
-        <!-- Círculo de cor -->
         <div
-          class="category-circle-md flex-shrink-0"
-          [style.background]="cat.color ?? '#29a0b1'"
+          class="cat-color-dot"
+          [style.background-color]="cat.color ?? '#c4714a'"
           aria-hidden="true"
         ></div>
 
-        <!-- Nome e contagem de subcategorias -->
-        <div class="flex-grow-1 text-start">
-          <span class="fw-semibold">{{ cat.name }}</span>
-          @if (cat.subCategories && cat.subCategories.length > 0) {
-            <span class="ms-2 badge text-bg-secondary" style="font-size: 0.7rem">
-              {{ cat.subCategories.length }} sub
-            </span>
-          }
-        </div>
+        <span class="cat-name">{{ cat.name }}</span>
 
-        <i class="bi bi-chevron-right" style="color: var(--text-muted)"></i>
+        @if (cat.subCategories && cat.subCategories.length > 0) {
+          <span class="cat-sub-badge">{{ cat.subCategories.length }} sub</span>
+        }
+
+        <i class="bi bi-chevron-right cat-chevron"></i>
       </button>
     }
   </div>

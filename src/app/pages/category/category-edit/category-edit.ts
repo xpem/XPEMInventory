@@ -107,7 +107,13 @@ export class CategoryEdit implements OnInit {
   // -------------------------------------------------------
   private loadCategory(id: number) {
     this.categoryApi.getWithSubCategories(id).subscribe({
-      next: (cat) => {
+      next: (data) => {
+        const cat = data[0];
+        if (!cat) {
+          this.toastService.showError('Categoria não encontrada.');
+          this.router.navigate(['/category/list']);
+          return;
+        }
         this.form.patchValue({ name: cat.name ?? '' });
         this.selectedColor.set(cat.color ?? '#2F9300');
         this.isSystemDefault.set(cat.systemDefault ?? false);

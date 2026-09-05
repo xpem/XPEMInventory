@@ -29,6 +29,8 @@ export class SignUp implements OnInit {
   form!: FormGroup;
   submitted = false;
   errorMessage = signal('');
+  showPassword = false;
+  showConfirmPassword = false;
 
   ngOnInit() {
     this.form = this.fb.group(

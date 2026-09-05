@@ -1,105 +1,112 @@
-<div class="d-flex justify-content-center mt-5 mb-4">
-  <i class="bi bi-person-add" style="color: white; font-size: 70px"></i>
-</div>
-
-<div class="d-flex justify-content-center">
-  <form
-    [formGroup]="form"
-    (ngSubmit)="onSubmit()"
-    class="col-lg-6 col-12"
-    style="max-width: 500px"
-    novalidate
-  >
-    <!-- Nome -->
-    <div class="mb-3">
-      <label for="inputName" class="form-label">Nome</label>
-      <input
-        type="text"
-        class="form-control"
-        id="inputName"
-        formControlName="name"
-        autocomplete="name"
-        [class.is-invalid]="(f['name'].touched || submitted) && f['name'].errors"
-      />
-      @if ((f['name'].touched || submitted) && f['name'].errors) {
-        <div class="invalid-feedback d-block">
-          @if (f['name'].errors['required']) { Nome é obrigatório. }
-          @if (f['name'].errors['minlength']) { Mínimo de 3 caracteres. }
-        </div>
-      }
+<div class="signup-page">
+  <div class="signup-card">
+    <div class="signup-brand">
+      <span class="brand-dot"></span>
+      <span class="brand-name">Xpem Inventário</span>
     </div>
 
-    <!-- Email -->
-    <div class="mb-3">
-      <label for="inputEmail" class="form-label">Email</label>
-      <input
-        type="email"
-        class="form-control"
-        id="inputEmail"
-        formControlName="email"
-        autocomplete="email"
-        [class.is-invalid]="(f['email'].touched || submitted) && f['email'].errors"
-      />
-      @if ((f['email'].touched || submitted) && f['email'].errors) {
-        <div class="invalid-feedback d-block">
-          @if (f['email'].errors['required']) { Email é obrigatório. }
-          @if (f['email'].errors['email']) { Informe um email válido. }
-        </div>
-      }
-    </div>
+    <h1 class="signup-title">Criar conta</h1>
+    <p class="signup-subtitle">Leva poucos segundos para montar seu cantinho organizado.</p>
 
-    <!-- Senha -->
-    <div class="mb-3">
-      <label for="inputPassword" class="form-label">Senha</label>
-      <input
-        type="password"
-        class="form-control"
-        id="inputPassword"
-        formControlName="password"
-        autocomplete="new-password"
-        [class.is-invalid]="(f['password'].touched || submitted) && f['password'].errors"
-      />
-      @if ((f['password'].touched || submitted) && f['password'].errors) {
-        <div class="invalid-feedback d-block">
-          @if (f['password'].errors['required']) { Senha é obrigatória. }
-          @if (f['password'].errors['minlength']) { Mínimo de 4 caracteres. }
-        </div>
-      }
-    </div>
-
-    <!-- Confirmação de senha -->
-    <div class="mb-4">
-      <label for="inputConfirmPassword" class="form-label">Confirme a Senha</label>
-      <input
-        type="password"
-        class="form-control"
-        id="inputConfirmPassword"
-        formControlName="confirmPassword"
-        autocomplete="new-password"
-        [class.is-invalid]="(f['confirmPassword'].touched || submitted) && f['confirmPassword'].errors"
-      />
-      @if ((f['confirmPassword'].touched || submitted) && f['confirmPassword'].errors) {
-        <div class="invalid-feedback d-block">
-          @if (f['confirmPassword'].errors['required']) { Confirmação é obrigatória. }
-          @if (f['confirmPassword'].errors['minlength']) { Mínimo de 4 caracteres. }
-          @if (f['confirmPassword'].errors['mustMatch']) { As senhas não coincidem. }
-        </div>
-      }
-    </div>
-
-    <!-- Botão -->
-    <div class="d-grid mb-3">
-      <button type="submit" class="btn btn-success">
-        <i class="bi bi-plus-lg"></i>&nbsp;&nbsp;Criar Conta
-      </button>
-    </div>
-
-    @if (errorMessage()) {
-      <div class="alert alert-danger mt-2" role="alert">
-        <i class="bi bi-exclamation-circle"></i> {{ errorMessage() }}
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+      <div class="field-group">
+        <label for="inputName" class="field-label">Nome</label>
+        <input
+          type="text"
+          class="field-input"
+          id="inputName"
+          formControlName="name"
+          autocomplete="name"
+          placeholder="Seu nome"
+          [class.field-error-border]="(f['name'].touched || submitted) && f['name'].errors"
+        />
+        @if ((f['name'].touched || submitted) && f['name'].errors) {
+          <div class="field-error">
+            @if (f['name'].errors['required']) { Nome é obrigatório. }
+            @if (f['name'].errors['minlength']) { Mínimo de 3 caracteres. }
+          </div>
+        }
       </div>
-    }
 
-    <div><a routerLink="/user/signin"><i class="bi bi-arrow-left"></i>&nbsp;&nbsp;Voltar</a></div>
-  </form>
+      <div class="field-group">
+        <label for="inputEmail" class="field-label">E-mail</label>
+        <input
+          type="email"
+          class="field-input"
+          id="inputEmail"
+          formControlName="email"
+          autocomplete="email"
+          placeholder="voce@exemplo.com"
+          [class.field-error-border]="(f['email'].touched || submitted) && f['email'].errors"
+        />
+        @if ((f['email'].touched || submitted) && f['email'].errors) {
+          <div class="field-error">
+            @if (f['email'].errors['required']) { Email é obrigatório. }
+            @if (f['email'].errors['email']) { Informe um email válido. }
+          </div>
+        }
+      </div>
+
+      <div class="field-group">
+        <label for="inputPassword" class="field-label">Senha</label>
+        <div class="password-wrapper">
+          <input
+            [type]="showPassword ? 'text' : 'password'"
+            class="field-input"
+            id="inputPassword"
+            formControlName="password"
+            autocomplete="new-password"
+            [class.field-error-border]="(f['password'].touched || submitted) && f['password'].errors"
+          />
+          <button type="button" class="password-toggle" (click)="showPassword = !showPassword">
+            {{ showPassword ? 'ocultar' : 'ver' }}
+          </button>
+        </div>
+        @if ((f['password'].touched || submitted) && f['password'].errors) {
+          <div class="field-error">
+            @if (f['password'].errors['required']) { Senha é obrigatória. }
+            @if (f['password'].errors['minlength']) { Mínimo de 4 caracteres. }
+          </div>
+        }
+      </div>
+
+      <div class="field-group">
+        <label for="inputConfirmPassword" class="field-label">Confirmar senha</label>
+        <div class="password-wrapper">
+          <input
+            [type]="showConfirmPassword ? 'text' : 'password'"
+            class="field-input"
+            id="inputConfirmPassword"
+            formControlName="confirmPassword"
+            autocomplete="new-password"
+            [class.field-error-border]="(f['confirmPassword'].touched || submitted) && f['confirmPassword'].errors"
+          />
+          <button type="button" class="password-toggle" (click)="showConfirmPassword = !showConfirmPassword">
+            {{ showConfirmPassword ? 'ocultar' : 'ver' }}
+          </button>
+        </div>
+        @if ((f['confirmPassword'].touched || submitted) && f['confirmPassword'].errors) {
+          <div class="field-error">
+            @if (f['confirmPassword'].errors['required']) { Confirmação é obrigatória. }
+            @if (f['confirmPassword'].errors['mustMatch']) { As senhas não coincidem. }
+          </div>
+        }
+      </div>
+
+      @if (errorMessage()) {
+        <div class="signup-error">{{ errorMessage() }}</div>
+      }
+
+      <button type="submit" class="btn-signup"><i class="bi bi-person-plus"></i>&nbsp;&nbsp;Criar conta</button>
+
+      <div class="signup-divider">
+        <span>JÁ TEM CONTA</span>
+      </div>
+
+      <p class="signin-prompt">
+        Já tem um cantinho?
+        <a routerLink="/user/signin" class="signin-link">Entrar</a>
+      </p>
+    </form>
+  </div>
 </div>

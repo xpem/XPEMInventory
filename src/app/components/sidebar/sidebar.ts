@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, computed } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
@@ -16,6 +16,16 @@ export class Sidebar {
 
   userName = this.authService.userName;
   userEmail = this.authService.userEmail;
+
+  userInitials = computed(() => {
+    const name = this.authService.userName();
+    if (!name) return '';
+    return name
+      .split(' ')
+      .slice(0, 2)
+      .map((n) => n[0]?.toUpperCase() ?? '')
+      .join('');
+  });
 
   onLogout() {
     this.authService.logout();
