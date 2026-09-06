@@ -106,6 +106,9 @@
 }
 
 .home-search {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   position: relative;
   margin-bottom: 1rem;
 }
@@ -121,7 +124,8 @@
 }
 
 .search-input {
-  width: 100%;
+  flex: 1;
+  min-width: 0;
   padding: 0.625rem 0.875rem 0.625rem 2.25rem;
   border: 1px solid #ddd6cc;
   border-radius: 12px;
@@ -140,6 +144,33 @@
 .search-input:focus {
   border-color: #c4714a;
   box-shadow: 0 0 0 3px rgba(196, 113, 74, 0.12);
+}
+
+.btn-search {
+  flex-shrink: 0;
+  background-color: #c4714a;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.625rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  white-space: nowrap;
+}
+
+.btn-search:hover {
+  background-color: #a85e3a;
+}
+
+.filter-section-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.5rem;
 }
 
 .filter-pills {

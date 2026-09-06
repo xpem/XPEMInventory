@@ -12,7 +12,7 @@ import { FormsModule } from '@angular/forms';
 import { ItemApiService } from '../../services/item-api';
 import { ToastService } from '../../services/toast.service';
 import { AuthService } from '../../services/auth.service';
-import { ItemDTO, UIItemSituation, ItemSearchParams } from '../../models/item.model';
+import { ItemDTO, UIItemSituation, ItemSearchParams, ResultOrderBy } from '../../models/item.model';
 
 @Component({
   selector: 'app-home',
@@ -36,8 +36,16 @@ export class Home implements OnInit, OnDestroy {
 
   situationList = signal<UIItemSituation[]>([]);
   selectedSituationId = signal<number | null>(null);
+  selectedOrderBy = signal<ResultOrderBy | null>(null);
   showFilters = signal(false);
   searchText = '';
+
+  readonly orderByOptions: { label: string; value: ResultOrderBy }[] = [
+    { label: 'Data de cadastro', value: ResultOrderBy.CreatedAt },
+    { label: 'Nome', value: ResultOrderBy.Name },
+    { label: 'Data de aquisição', value: ResultOrderBy.AcquisitionDate },
+    { label: 'Última atualização', value: ResultOrderBy.UpdatedAt },
+  ];
 
   ngOnInit() {
     if (!isPlatformBrowser(this.platformId)) return;
@@ -183,14 +191,24 @@ export class Home implements OnInit, OnDestroy {
     if (id != null) this.router.navigate(['/item/edit'], { queryParams: { x: id } });
   }
 
+  selectOrderBy(value: ResultOrderBy) {
+    const current = this.selectedOrderBy();
+    this.selectedOrderBy.set(current === value ? null : value);
+  }
+
   hasActiveSearch(): boolean {
-    return this.searchText.trim().length > 0 || this.selectedSituationId() !== null;
+    return (
+      this.searchText.trim().length > 0 ||
+      this.selectedSituationId() !== null ||
+      this.selectedOrderBy() !== null
+    );
   }
 
   private buildSearchParams(): ItemSearchParams {
     return {
       name: this.searchText.trim() || null,
       situations: this.selectedSituationId() !== null ? [this.selectedSituationId()!] : null,
+      orderBy: this.selectedOrderBy(),
     };
   }
 

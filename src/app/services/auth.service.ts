@@ -46,8 +46,13 @@ export class AuthService {
     return this.cookieService.get(this.REFRESH_TOKEN_KEY) || null;
   }
 
-  saveTokens(response: TokenResponse): void {
-    const cookieOptions = { expires: 3, secure: true, sameSite: 'Lax' as const, path: '/' };
+  saveTokens(response: TokenResponse, rememberMe = false): void {
+    const cookieOptions = {
+      ...(rememberMe ? { expires: 30 } : {}),
+      secure: true,
+      sameSite: 'Lax' as const,
+      path: '/',
+    };
     this.cookieService.set(this.TOKEN_KEY, response.token, cookieOptions);
     this.cookieService.set(this.REFRESH_TOKEN_KEY, response.refreshToken, cookieOptions);
     this.isAuthenticatedSignal.set(true);

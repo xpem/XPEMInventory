@@ -23,9 +23,13 @@
     <i class="bi bi-search search-icon"></i>
     <input type="text" class="search-input" [(ngModel)]="searchText" placeholder="Buscar por nome ou categoria"
       (keyup.enter)="search()" aria-label="Buscar itens" />
+    <button type="button" class="btn-search" (click)="search()" aria-label="Buscar">
+      Buscar
+    </button>
   </div>
 
   <!-- Filtros por situação -->
+  <div class="filter-section-label">Situação</div>
   <div class="filter-pills">
     <button class="filter-pill" [class.active]="selectedSituationId() === null" (click)="selectSituation(null)">
       Todos
@@ -35,6 +39,17 @@
       (click)="selectSituation(situation.id!)">
       {{ situation.name }}
       <span class="pill-count">{{ situation.quantity }}</span>
+    </button>
+    }
+  </div>
+
+  <!-- Ordenação -->
+  <div class="filter-section-label">Ordenar por</div>
+  <div class="filter-pills">
+    @for (opt of orderByOptions; track opt.value) {
+    <button class="filter-pill" [class.active]="selectedOrderBy() === opt.value"
+      (click)="selectOrderBy(opt.value)">
+      {{ opt.label }}
     </button>
     }
   </div>

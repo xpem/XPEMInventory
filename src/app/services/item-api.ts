@@ -97,9 +97,20 @@ export class ItemApiService {
     });
   }
 
-  /** PUT /Inventory/item/:id/image — upload de imagem como base64 */
+  /** PUT /Inventory/item/:id/image — upload de imagem como multipart/form-data (file1) */
   uploadImage(itemId: number, imageBase64: string, mimeType: string): Observable<unknown> {
-    return this.http.put(`${this.base}/${itemId}/image`, { imageBase64, mimeType });
+    const byteString = atob(imageBase64);
+    const buffer = new ArrayBuffer(byteString.length);
+    const bytes = new Uint8Array(buffer);
+    for (let i = 0; i < byteString.length; i++) bytes[i] = byteString.charCodeAt(i);
+
+    const ext = mimeType === 'image/png' ? '.png' : '.jpg';
+    const file = new File([new Blob([buffer], { type: mimeType })], `image${ext}`, { type: mimeType });
+
+    const form = new FormData();
+    form.append('file1', file);
+
+    return this.http.put(`${this.base}/${itemId}/image`, form);
   }
 
   /** DELETE /Inventory/item/:id/image/:fileName */
