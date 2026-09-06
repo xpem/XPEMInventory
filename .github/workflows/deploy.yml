@@ -3,7 +3,7 @@ name: Marte GitTea Deploy XpemInventory local
 on:
   pull_request:
     branches:
-      - main
+      - master
     types:
       - closed
 
