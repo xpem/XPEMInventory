@@ -35,6 +35,7 @@ export class SignIn implements OnInit {
     this.form = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(4)]],
+      rememberMe: [false],
     });
   }
 
@@ -50,7 +51,7 @@ export class SignIn implements OnInit {
 
     this.userApi.signIn(this.form.value).subscribe({
       next: (response) => {
-        this.authService.saveTokens(response);
+        this.authService.saveTokens(response, this.form.value.rememberMe);
         this.router.navigate(['/home']);
       },
       error: (error: HttpErrorResponse) => {
