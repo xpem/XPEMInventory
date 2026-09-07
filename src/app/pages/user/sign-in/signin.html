@@ -67,6 +67,20 @@
         </button>
       }
 
+      @if (hasGoogleAuth) {
+        <div class="signin-divider"><span>OU</span></div>
+
+        <div class="google-btn-wrapper">
+          <div #googleBtnContainer class="google-btn-container"></div>
+          @if (isGoogleLoading()) {
+            <div class="google-btn-overlay">
+              <span class="spinner-grow spinner-grow-sm" aria-hidden="true"></span>
+              &nbsp;&nbsp;Entrando...
+            </div>
+          }
+        </div>
+      }
+
       <div class="signin-divider">
         <span>NOVO POR AQUI</span>
       </div>

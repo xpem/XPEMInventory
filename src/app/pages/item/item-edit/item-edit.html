@@ -1,23 +1,41 @@
 <!-- Loading -->
 @if (isLoading()) {
-  <div class="loading-center">
-    <div class="spinner-border spinner-coral" role="status">
-      <span class="visually-hidden">Carregando...</span>
-    </div>
+<div class="loading-center">
+  <div class="spinner-border spinner-coral" role="status">
+    <span class="visually-hidden">Carregando...</span>
   </div>
+</div>
 } @else {
 
-  <!-- Topbar -->
-  <div class="edit-topbar">
-    <button type="button" class="btn-back" (click)="goBack()">
-      <i class="bi bi-arrow-left"></i> Voltar
+<!-- Topbar -->
+<div class="edit-topbar">
+  <button type="button" class="btn-back" (click)="goBack()">
+    <i class="bi bi-arrow-left"></i> Voltar
+  </button>
+  @if (!isInsert()) {
+  <div class="dropdown">
+    <button class="btn btn-secondary dropdown-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+      <i class="bi bi-three-dots-vertical"></i>
     </button>
+    <ul class="dropdown-menu dropdown-list">
+      <li>
+        <button class="dropdown-item" type="button" (click)="deleteItem()" [disabled]="isDeleting()">
+          @if (isDeleting()) {
+            <span class="spinner-grow spinner-grow-sm" aria-hidden="true"></span> Excluindo...
+          } @else {
+            <i class="bi bi-trash"></i> Excluir
+          }
+        </button>
+      </li>
+    </ul>
   </div>
+  }
+</div>
 
-  <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+<form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
 
-    <!-- Seção: informações básicas -->
-    <div class="form-section">
+  <!-- Seção: informações básicas -->
+  <div class="form-section">
 
       <!-- Nome -->
       <div class="field-group">
@@ -56,162 +74,116 @@
         </div>
       }
 
-      <!-- Categoria -->
-      <div class="field-group">
-        <label class="field-label">Categoria</label>
-        <button
-          type="button"
-          class="cat-select-btn"
-          data-bs-toggle="modal"
-          data-bs-target="#modalCategories"
-          aria-label="Selecionar categoria"
-        >
-          <span>{{ categoryBtnLabel() }}</span>
-          <i class="bi bi-chevron-right"></i>
-        </button>
-        @if (categoryError()) {
-          <div class="field-error">{{ categoryError() }}</div>
-        }
-      </div>
+    <!-- Categoria -->
+    <div class="field-group">
+      <label class="field-label">Categoria</label>
+      <button type="button" class="cat-select-btn" data-bs-toggle="modal" data-bs-target="#modalCategories"
+        aria-label="Selecionar categoria">
+        <span>{{ categoryBtnLabel() }}</span>
+        <i class="bi bi-chevron-right"></i>
+      </button>
+      @if (categoryError()) {
+      <div class="field-error">{{ categoryError() }}</div>
+      }
+    </div>
 
-      <!-- Situação -->
+    <!-- Situação -->
+    <div class="field-group">
+      <label for="inputSituation" class="field-label">Situação</label>
+      <select class="field-select" id="inputSituation" formControlName="situationId">
+        @for (s of situations(); track s.id) {
+        <option [value]="s.id">{{ s.name }}</option>
+        }
+      </select>
+      @if (situationError()) {
+      <div class="field-error">{{ situationError() }}</div>
+      }
+    </div>
+  </div>
+
+  <!-- Seção: Aquisição -->
+  <div class="form-section">
+    <h2 class="section-title">Aquisição</h2>
+
+    <div class="field-row">
       <div class="field-group">
-        <label for="inputSituation" class="field-label">Situação</label>
-        <select class="field-select" id="inputSituation" formControlName="situationId">
-          @for (s of situations(); track s.id) {
-            <option [value]="s.id">{{ s.name }}</option>
+        <label for="inputAcquisitionType" class="field-label">Tipo</label>
+        <select class="field-select" id="inputAcquisitionType" formControlName="acquisitionTypeId">
+          @for (t of acquisitionTypes(); track t.id) {
+          <option [value]="t.id">{{ t.name }}</option>
           }
         </select>
-        @if (situationError()) {
-          <div class="field-error">{{ situationError() }}</div>
+        @if (acquisitionTypeError()) {
+        <div class="field-error">{{ acquisitionTypeError() }}</div>
         }
       </div>
-    </div>
 
-    <!-- Seção: Aquisição -->
-    <div class="form-section">
-      <h2 class="section-title">Aquisição</h2>
-
-      <div class="field-row">
-        <div class="field-group">
-          <label for="inputAcquisitionType" class="field-label">Tipo</label>
-          <select class="field-select" id="inputAcquisitionType" formControlName="acquisitionTypeId">
-            @for (t of acquisitionTypes(); track t.id) {
-              <option [value]="t.id">{{ t.name }}</option>
-            }
-          </select>
-          @if (acquisitionTypeError()) {
-            <div class="field-error">{{ acquisitionTypeError() }}</div>
-          }
-        </div>
-
-        <div class="field-group">
-          <label for="inputAcquisitionDate" class="field-label">Data</label>
-          <input
-            type="date"
-            class="field-input"
-            id="inputAcquisitionDate"
-            formControlName="acquisitionDate"
-          />
-        </div>
-      </div>
-
-      <div class="field-row">
-        <div class="field-group">
-          <label for="inputPurchaseValue" class="field-label">Valor</label>
-          <div class="currency-group">
-            <span class="currency-prefix">R$</span>
-            <input
-              type="text"
-              class="field-input currency-input"
-              id="inputPurchaseValue"
-              formControlName="purchaseValue"
-              placeholder="0,00"
-              inputmode="numeric"
-              (input)="onCurrencyInput($event)"
-            />
-          </div>
-        </div>
-
-        <div class="field-group">
-          <label for="inputPurchaseStore" class="field-label">Loja</label>
-          <input
-            type="text"
-            class="field-input store-datalist-input"
-            id="inputPurchaseStore"
-            formControlName="purchaseStore"
-            list="storesList"
-            autocomplete="off"
-            placeholder="Ex: Amazon"
-          />
-          <datalist id="storesList">
-            @for (store of lastPurchaseStores(); track store) {
-              <option [value]="store"></option>
-            }
-          </datalist>
-        </div>
-      </div>
-    </div>
-
-    <!-- Seção: Revenda (condicional) -->
-    @if (isResale) {
-      <div class="form-section">
-        <h2 class="section-title">Revenda</h2>
-
-        <div class="field-row">
-          <div class="field-group">
-            <label for="inputResaleValue" class="field-label">Valor de Revenda</label>
-            <div class="currency-group">
-              <span class="currency-prefix">R$</span>
-              <input
-                type="text"
-                class="field-input currency-input"
-                id="inputResaleValue"
-                formControlName="resaleValue"
-                placeholder="0,00"
-                inputmode="numeric"
-                (input)="onCurrencyInput($event)"
-              />
-            </div>
-          </div>
-
-          <div class="field-group">
-            <label for="inputWithdrawalDate" class="field-label">Data de Retirada</label>
-            <input
-              type="date"
-              class="field-input"
-              id="inputWithdrawalDate"
-              formControlName="withdrawalDate"
-            />
-          </div>
-        </div>
-      </div>
-    }
-
-    <!-- Seção: Detalhes -->
-    <div class="form-section">
       <div class="field-group">
-        <label for="inputTechDesc" class="field-label">Descrição técnica</label>
-        <textarea
-          class="field-input"
-          id="inputTechDesc"
-          formControlName="technicalDescription"
-          rows="2"
-          placeholder="Especificações, modelo, número de série..."
-        ></textarea>
-      </div>
-
-      <div class="field-group" style="margin-bottom: 0">
-        <label for="inputComment" class="field-label">Comentários</label>
-        <textarea
-          class="field-input"
-          id="inputComment"
-          formControlName="comment"
-          rows="2"
-          placeholder="Observações gerais..."
-        ></textarea>
+        <label for="inputAcquisitionDate" class="field-label">Data</label>
+        <input type="date" class="field-input" id="inputAcquisitionDate" formControlName="acquisitionDate" />
       </div>
     </div>
+
+    <div class="field-row">
+      <div class="field-group">
+        <label for="inputPurchaseValue" class="field-label">Valor</label>
+        <div class="currency-group">
+          <span class="currency-prefix">R$</span>
+          <input type="text" class="field-input currency-input" id="inputPurchaseValue" formControlName="purchaseValue"
+            placeholder="0,00" inputmode="numeric" (input)="onCurrencyInput($event)" />
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label for="inputPurchaseStore" class="field-label">Loja</label>
+        <input type="text" class="field-input store-datalist-input" id="inputPurchaseStore"
+          formControlName="purchaseStore" list="storesList" autocomplete="off" placeholder="Ex: Amazon" />
+        <datalist id="storesList">
+          @for (store of lastPurchaseStores(); track store) {
+          <option [value]="store"></option>
+          }
+        </datalist>
+      </div>
+    </div>
+  </div>
+
+  <!-- Seção: Revenda (condicional) -->
+  @if (isResale) {
+  <div class="form-section">
+    <h2 class="section-title">Revenda</h2>
+
+    <div class="field-row">
+      <div class="field-group">
+        <label for="inputResaleValue" class="field-label">Valor de Revenda</label>
+        <div class="currency-group">
+          <span class="currency-prefix">R$</span>
+          <input type="text" class="field-input currency-input" id="inputResaleValue" formControlName="resaleValue"
+            placeholder="0,00" inputmode="numeric" (input)="onCurrencyInput($event)" />
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label for="inputWithdrawalDate" class="field-label">Data de Retirada</label>
+        <input type="date" class="field-input" id="inputWithdrawalDate" formControlName="withdrawalDate" />
+      </div>
+    </div>
+  </div>
+  }
+
+  <!-- Seção: Detalhes -->
+  <div class="form-section">
+    <div class="field-group">
+      <label for="inputTechDesc" class="field-label">Descrição técnica</label>
+      <textarea class="field-input" id="inputTechDesc" formControlName="technicalDescription" rows="2"
+        placeholder="Especificações, modelo, número de série..."></textarea>
+    </div>
+
+    <div class="field-group" style="margin-bottom: 0">
+      <label for="inputComment" class="field-label">Comentários</label>
+      <textarea class="field-input" id="inputComment" formControlName="comment" rows="2"
+        placeholder="Observações gerais..."></textarea>
+    </div>
+  </div>
 
     <!-- Seção: Foto (oculta no cadastro em lote) -->
     <div class="form-section photo-section" [hidden]="isInsert() && f['quantity'].value > 1">
@@ -243,47 +215,62 @@
       }
     </div>
 
-    <!-- Espaço para o botão fixo não cobrir conteúdo -->
-    <div style="height: 80px"></div>
+  <!-- Espaço para o botão fixo não cobrir conteúdo -->
+  <div style="height: 80px"></div>
 
-    <!-- Botão salvar fixo -->
-    <div class="save-btn-container">
-      @if (!isSaving()) {
-        @if (isInsert()) {
-          <button type="submit" class="btn-save-fixed">
-            <i class="bi bi-plus-lg"></i> Cadastrar
-          </button>
-        } @else {
-          <button type="submit" class="btn-save-fixed">
-            <i class="bi bi-check-lg"></i> Salvar
-          </button>
-        }
-      } @else {
-        <button type="button" class="btn-save-fixed" disabled>
-          <span class="spinner-grow spinner-grow-sm" aria-hidden="true"></span> Salvando...
-        </button>
-      }
-    </div>
+  <!-- Botão salvar fixo -->
+  <div class="save-btn-container">
+    @if (!isSaving()) {
+    @if (isInsert()) {
+    <button type="submit" class="btn-save-fixed">
+      <i class="bi bi-plus-lg"></i> Cadastrar
+    </button>
+    } @else {
+    <button type="submit" class="btn-save-fixed">
+      <i class="bi bi-check-lg"></i> Salvar
+    </button>
+    }
+    } @else {
+    <button type="button" class="btn-save-fixed" disabled>
+      <span class="spinner-grow spinner-grow-sm" aria-hidden="true"></span> Salvando...
+    </button>
+    }
+  </div>
 
-  </form>
+</form>
 }
 
 <!-- Modais -->
-<app-modal-categories
-  [categories]="categories()"
-  (selectCategory)="onSelectCategory($event)"
-  (showSubCategory)="onShowSubCategory($event)"
-/>
+<app-modal-categories [categories]="categories()" (selectCategory)="onSelectCategory($event)"
+  (showSubCategory)="onShowSubCategory($event)" />
 
-<app-modal-subcategories
-  [selectedCategory]="selectedCategory()"
-  (selectSubCategory)="onSelectSubCategory($event)"
-/>
+<app-modal-subcategories [selectedCategory]="selectedCategory()" (selectSubCategory)="onSelectSubCategory($event)" />
 
-<app-modal-camera
-  (imageSelected)="onImageSelected($event)"
-/>
+<app-modal-camera (imageSelected)="onImageSelected($event)" />
 
-<app-modal-select-file
-  (imageSelected)="onImageSelected($event)"
-/>
+<app-modal-select-file (imageSelected)="onImageSelected($event)" />
+
+<!-- Modal: Confirmar exclusão -->
+<div class="modal fade" id="modalConfirmDelete" tabindex="-1" aria-labelledby="modalConfirmDeleteLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content confirm-delete-modal">
+      <div class="confirm-delete-header">
+        <i class="bi bi-trash3 confirm-delete-header-icon"></i>
+        <h5 class="confirm-delete-title" id="modalConfirmDeleteLabel">Excluir item?</h5>
+      </div>
+      <div class="confirm-delete-body">
+        <p class="confirm-delete-text">Esta ação não pode ser desfeita.</p>
+        <div class="confirm-delete-actions">
+          <button type="button" class="btn-confirm-cancel" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn-confirm-delete" (click)="confirmDelete()" [disabled]="isDeleting()">
+            @if (isDeleting()) {
+              <span class="spinner-grow spinner-grow-sm" aria-hidden="true"></span> Excluindo...
+            } @else {
+              <i class="bi bi-trash3"></i> Excluir
+            }
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
