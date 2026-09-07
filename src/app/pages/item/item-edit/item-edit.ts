@@ -416,6 +416,15 @@ export class ItemEdit implements OnInit {
     return isNaN(n) ? null : n;
   }
 
+  onQuantityInput(event: Event) {
+    const el = event.target as HTMLInputElement;
+    let val = parseInt(el.value, 10);
+    if (isNaN(val) || val < 1) val = 1;
+    if (val > 99) val = 99;
+    el.value = String(val);
+    this.form.get('quantity')?.setValue(val, { emitEvent: false });
+  }
+
   /** Formata enquanto digita: apenas dígitos → centavos à esquerda */
   onCurrencyInput(event: Event) {
     const el = event.target as HTMLInputElement;

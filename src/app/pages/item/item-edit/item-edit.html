@@ -56,24 +56,6 @@
         }
       </div>
 
-      <!-- Quantidade (somente no cadastro) -->
-      @if (isInsert()) {
-        <div class="field-group">
-          <label for="inputQuantity" class="field-label">Quantidade</label>
-          <input
-            type="number"
-            class="field-input quantity-input"
-            id="inputQuantity"
-            formControlName="quantity"
-            min="1"
-            max="99"
-          />
-          @if (f['quantity'].value > 1) {
-            <div class="field-hint">A foto não será vinculada nos cadastros em lote.</div>
-          }
-        </div>
-      }
-
     <!-- Categoria -->
     <div class="field-group">
       <label class="field-label">Categoria</label>
@@ -144,6 +126,26 @@
           }
         </datalist>
       </div>
+
+            <!-- Quantidade (somente no cadastro) -->
+      @if (isInsert()) {
+        <div class="field-group">
+          <label for="inputQuantity" class="field-label">Quantidade</label>
+          <input
+            type="number"
+            class="field-input quantity-input"
+            id="inputQuantity"
+            formControlName="quantity"
+            min="1"
+            max="10"
+            inputmode="numeric"
+            (input)="onQuantityInput($event)"
+          />
+          @if (f['quantity'].value > 1) {
+            <div class="field-hint">A foto não será vinculada nos cadastros em lote.</div>
+          }
+        </div>
+      }
     </div>
   </div>
 
