@@ -86,6 +86,8 @@ export class ItemEdit implements OnInit {
       // campos condicionais de revenda
       resaleValue: [''],
       withdrawalDate: [this.todayStr()],
+      // quantidade (só usada no insert)
+      quantity: [1, [Validators.required, Validators.min(1), Validators.max(99)]],
     });
 
     const id = this.route.snapshot.queryParamMap.get('x');
@@ -276,6 +278,7 @@ export class ItemEdit implements OnInit {
 
     const v = this.form.value;
     const isResale = Number(v.situationId) === RESALE_STATUS_ID;
+    const quantity = Number(v.quantity) || 1;
 
     const payload: any = {
       name: v.name?.trim(),
@@ -297,6 +300,22 @@ export class ItemEdit implements OnInit {
     };
 
     const id = this.itemId();
+
+    // Bulk insert: quantity > 1 e modo insert
+    if (!id && quantity > 1) {
+      this.itemApi.insertBulk(payload, quantity).subscribe({
+        next: (result) => {
+          this.toastService.showSuccess(`${result.count} itens cadastrados!`);
+          this.router.navigate(['/home']);
+        },
+        error: (err) => {
+          console.error('Erro ao cadastrar itens:', err);
+          this.toastService.showError('Erro ao cadastrar itens. Tente novamente.');
+          this.isSaving.set(false);
+        },
+      });
+      return;
+    }
 
     const obs$ = id
       ? this.itemApi.update({ ...payload, id })

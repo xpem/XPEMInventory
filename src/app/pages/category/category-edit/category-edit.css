@@ -59,7 +59,7 @@
 
 /* Form section card */
 .form-section {
-  background-color: #f3ede6;
+  background-color: #f6f0e6;
   border: 1px solid #ecdfd3;
   border-radius: 16px;
   padding: 1.25rem;
@@ -211,7 +211,7 @@
 
 /* Subcategorias */
 .sub-section {
-  background-color: #f3ede6;
+  background-color: #f6f0e6;
   border: 1px solid #ecdfd3;
   border-radius: 16px;
   padding: 1.25rem;
@@ -387,7 +387,7 @@
 
 /* Modais */
 .modal-light {
-  background-color: #faf6f1;
+  background-color: var(--bg-app);
   border: 1px solid #ecdfd3;
 }
 

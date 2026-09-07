@@ -76,6 +76,14 @@ export class ItemApiService {
     return this.http.post<ItemDTO>(this.base, this.buildPayload(item));
   }
 
+  /** POST /Inventory/item/bulk — cadastra N itens idênticos */
+  insertBulk(item: Partial<ItemDTO>, quantity: number): Observable<{ count: number }> {
+    return this.http.post<{ count: number }>(`${this.base}/bulk`, {
+      ...this.buildPayload(item),
+      quantity,
+    });
+  }
+
   /** PUT /Inventory/item/:id */
   update(item: Partial<ItemDTO> & { id: number }): Observable<ItemDTO> {
     return this.http.put<ItemDTO>(`${this.base}/${item.id}`, this.buildPayload(item));

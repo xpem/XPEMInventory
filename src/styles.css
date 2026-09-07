@@ -8,7 +8,7 @@
   --color-coral-dark:   #a85e3a;
   --color-coral-shadow: rgba(196, 113, 74, 0.12);
 
-  --bg-app:   #faf6f1;
+  --bg-app:   #faf6ee;
   --bg-card:  white;
   --bg-input: #fdfaf6;
 
@@ -37,7 +37,11 @@ h1 { font-family: 'Boogaloo', 'Nunito', sans-serif; }
 body {
   margin: 0;
   font-family: 'Nunito', 'Helvetica Neue', sans-serif;
-  background-color: var(--bg-app);
+  background:
+    radial-gradient(ellipse at 15% 10%, rgba(180, 180, 215, 0.45) 0%, transparent 45%),
+    radial-gradient(ellipse at 85% 90%, rgba(210, 150, 120, 0.35) 0%, transparent 45%),
+    var(--bg-app);
+  min-height: 100vh;
 }
 
 .content { padding-top: 0; }
@@ -205,7 +209,7 @@ body {
 }
 
 .form-section {
-  background-color: #f3ede6;
+  background-color: #f6f0e6;
   border: 1px solid var(--border-color-card);
   border-radius: 16px;
   padding: 1.25rem;

@@ -1,7 +1,10 @@
 .signin-page {
   position: fixed;
   inset: 0;
-  background-color: #faf6ee;
+  background:
+    radial-gradient(ellipse at 15% 10%, rgba(180, 180, 215, 0.45) 0%, transparent 45%),
+    radial-gradient(ellipse at 85% 90%, rgba(210, 150, 120, 0.35) 0%, transparent 45%),
+    #faf6ee;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -16,7 +19,7 @@
   padding: 2.5rem 2rem;
   width: 100%;
   max-width: 440px;
-  box-shadow: 0 1px 4px #4a4139;
+  box-shadow: 0 1px 4px rgba(74, 65, 57, 0.35);
 }
 
 .signin-brand {
