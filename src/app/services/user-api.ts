@@ -34,6 +34,10 @@ export class UserApiService {
     return this.http.post<TokenResponse>(`${this.apiUrl}/session/refresh`, { refreshToken });
   }
 
+  googleSignIn(idToken: string): Observable<TokenResponse> {
+    return this.http.post<TokenResponse>(`${this.apiUrl}/session/google`, { idToken });
+  }
+
   signUp(payload: SignUpPayload): Observable<any> {
     return this.http.post(this.apiUrl, payload);
   }

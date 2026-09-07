@@ -45,6 +45,7 @@ export class ItemEdit implements OnInit {
   // -------------------------------------------------------
   isLoading = signal(true);
   isSaving = signal(false);
+  isDeleting = signal(false);
   isInsert = signal(true);
   itemId = signal<number | null>(null);
 
@@ -338,6 +339,32 @@ export class ItemEdit implements OnInit {
       const mimeType = meta.split(':')[1].split(';')[0];
       await this.itemApi.uploadImage(itemId, base64, mimeType).toPromise().catch(() => {});
     }
+  }
+
+  deleteItem() {
+    if (this.isDeleting() || !this.itemId()) return;
+    const modalEl = document.getElementById('modalConfirmDelete');
+    if (!modalEl) return;
+    (window as any).bootstrap.Modal.getOrCreateInstance(modalEl).show();
+  }
+
+  confirmDelete() {
+    if (this.isDeleting() || !this.itemId()) return;
+    this.isDeleting.set(true);
+
+    const modalEl = document.getElementById('modalConfirmDelete');
+    if (modalEl) (window as any).bootstrap.Modal.getOrCreateInstance(modalEl).hide();
+
+    this.itemApi.delete(this.itemId()!).subscribe({
+      next: () => {
+        this.toastService.showSuccess('Item excluído!');
+        this.router.navigate(['/home']);
+      },
+      error: () => {
+        this.toastService.showError('Erro ao excluir item. Tente novamente.');
+        this.isDeleting.set(false);
+      },
+    });
   }
 
   goBack() {

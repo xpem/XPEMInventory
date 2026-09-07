@@ -47,11 +47,43 @@ export class Home implements OnInit, OnDestroy {
     { label: 'Última atualização', value: ResultOrderBy.UpdatedAt },
   ];
 
+  private readonly SEARCH_STATE_KEY = 'home_search_state';
+
   ngOnInit() {
     if (!isPlatformBrowser(this.platformId)) return;
-    this.loadItems();
+    this.restoreSearchState();
     this.loadSituations();
     window.addEventListener('scroll', this.onScroll);
+  }
+
+  private restoreSearchState() {
+    try {
+      const saved = sessionStorage.getItem(this.SEARCH_STATE_KEY);
+      if (saved) {
+        const state = JSON.parse(saved);
+        this.searchText = state.searchText ?? '';
+        this.selectedSituationId.set(state.selectedSituationId ?? null);
+        this.selectedOrderBy.set(state.selectedOrderBy ?? null);
+        this.showFilters.set(state.showFilters ?? false);
+      }
+    } catch {}
+
+    if (this.hasActiveSearch()) {
+      this.search();
+    } else {
+      this.loadItems();
+    }
+  }
+
+  private saveSearchState() {
+    try {
+      sessionStorage.setItem(this.SEARCH_STATE_KEY, JSON.stringify({
+        searchText: this.searchText,
+        selectedSituationId: this.selectedSituationId(),
+        selectedOrderBy: this.selectedOrderBy(),
+        showFilters: this.showFilters(),
+      }));
+    } catch {}
   }
 
   ngOnDestroy() {
@@ -188,7 +220,10 @@ export class Home implements OnInit, OnDestroy {
   }
 
   goToItem(id: number | null | undefined) {
-    if (id != null) this.router.navigate(['/item/edit'], { queryParams: { x: id } });
+    if (id != null) {
+      this.saveSearchState();
+      this.router.navigate(['/item/edit'], { queryParams: { x: id } });
+    }
   }
 
   selectOrderBy(value: ResultOrderBy) {
