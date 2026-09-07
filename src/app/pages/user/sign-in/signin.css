@@ -126,3 +126,26 @@
   color: #a85e3a;
   text-decoration: underline;
 }
+
+.google-btn-wrapper {
+  position: relative;
+  margin-bottom: 1.25rem;
+}
+
+.google-btn-container {
+  width: 100%;
+  min-height: 44px;
+}
+
+.google-btn-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(246, 240, 230, 0.85);
+  border-radius: 4px;
+  font-size: 0.9rem;
+  color: #374151;
+  font-weight: 500;
+}
