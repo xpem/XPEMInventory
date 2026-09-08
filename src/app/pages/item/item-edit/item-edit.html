@@ -19,7 +19,12 @@
     </button>
     <ul class="dropdown-menu dropdown-list">
       <li>
-        <button class="dropdown-item" type="button" (click)="deleteItem()" [disabled]="isDeleting()">
+        <button class="dropdown-item" type="button" (click)="duplicate()">
+          <i class="bi bi-copy"></i> Duplicar
+        </button>
+      </li>
+      <li>
+        <button class="dropdown-item dropdown-item-danger" type="button" (click)="deleteItem()" [disabled]="isDeleting()">
           @if (isDeleting()) {
             <span class="spinner-grow spinner-grow-sm" aria-hidden="true"></span> Excluindo...
           } @else {

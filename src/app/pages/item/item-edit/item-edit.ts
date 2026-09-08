@@ -97,7 +97,11 @@ export class ItemEdit implements OnInit {
       this.itemId.set(Number(id));
       this.loadConfigs().then(() => this.loadItem(Number(id)));
     } else {
-      this.loadConfigs().then(() => (this.isLoading.set(false)));
+      this.loadConfigs().then(() => {
+        const prefill = (history as any).state?.prefill;
+        if (prefill) this.applyPrefill(prefill);
+        this.isLoading.set(false);
+      });
     }
   }
 
@@ -357,6 +361,53 @@ export class ItemEdit implements OnInit {
       const [meta, base64] = currentImage.split(',');
       const mimeType = meta.split(':')[1].split(';')[0];
       await this.itemApi.uploadImage(itemId, base64, mimeType).toPromise().catch(() => {});
+    }
+  }
+
+  duplicate() {
+    const v = this.form.value;
+    this.router.navigate(['/item-edit'], {
+      state: {
+        prefill: {
+          name: v.name,
+          technicalDescription: v.technicalDescription,
+          situationId: v.situationId,
+          acquisitionTypeId: v.acquisitionTypeId,
+          purchaseValue: v.purchaseValue,
+          purchaseStore: v.purchaseStore,
+          comment: v.comment,
+          resaleValue: v.resaleValue,
+          withdrawalDate: v.withdrawalDate,
+          categoryId: this.selectedCategory()?.id,
+          subCategoryId: this.selectedSubCategoryId(),
+          categoryLabel: this.categoryBtnLabel(),
+        },
+      },
+    });
+  }
+
+  private applyPrefill(prefill: any) {
+    this.form.patchValue({
+      name: prefill.name ?? '',
+      technicalDescription: prefill.technicalDescription ?? '',
+      acquisitionDate: this.todayStr(),
+      situationId: prefill.situationId,
+      acquisitionTypeId: prefill.acquisitionTypeId,
+      purchaseValue: prefill.purchaseValue ?? '',
+      purchaseStore: prefill.purchaseStore ?? '',
+      comment: prefill.comment ?? '',
+      resaleValue: prefill.resaleValue ?? '',
+      withdrawalDate: prefill.withdrawalDate ?? this.todayStr(),
+    });
+
+    if (prefill.categoryId != null) {
+      const cat = this.categories().find((c) => c.id === prefill.categoryId) ?? null;
+      if (cat) {
+        this.selectedCategory.set(cat);
+        this.selectedSubCategoryId.set(prefill.subCategoryId ?? null);
+        this.categoryBtnLabel.set(prefill.categoryLabel ?? cat.name ?? '');
+        this.categoryError.set('');
+      }
     }
   }
 

@@ -33,13 +33,23 @@
 }
 
 .dropdown-list .dropdown-item {
-  color: #d08a6a;
+  color: #374151;
 }
 
 .dropdown-list .dropdown-item:hover,
 .dropdown-list .dropdown-item:focus {
-  background-color: rgba(208, 138, 106, 0.15);
-  color: #d08a6a;
+  background-color: rgba(196, 113, 74, 0.1);
+  color: #374151;
+}
+
+.dropdown-list .dropdown-item-danger {
+  color: #ef4444;
+}
+
+.dropdown-list .dropdown-item-danger:hover,
+.dropdown-list .dropdown-item-danger:focus {
+  background-color: rgba(239, 68, 68, 0.08);
+  color: #ef4444;
 }
 
 .btn-back {
