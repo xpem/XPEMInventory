@@ -11,6 +11,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ItemApiService } from '../../../services/item-api';
 import { ToastService } from '../../../services/toast.service';
+import { AppRouteReuseStrategy } from '../../../route-reuse-strategy';
 import {
   AcquisitionType,
   ItemSituation,
@@ -37,6 +38,7 @@ export class ItemEdit implements OnInit {
   private itemApi = inject(ItemApiService);
   private toastService = inject(ToastService);
   private platformId = inject(PLATFORM_ID);
+  private reuseStrategy = inject(AppRouteReuseStrategy);
 
   readonly RESALE_STATUS_ID = RESALE_STATUS_ID;
 
@@ -62,10 +64,14 @@ export class ItemEdit implements OnInit {
   categoryError = signal('');
   situationError = signal('');
   acquisitionTypeError = signal('');
+  purchaseValueError = signal('');
 
   // Imagem
   imageDataUrl = signal<string | null>(null);
   originalImageName = signal<string | null>(null); // nome do arquivo já salvo na API
+
+  // Duplicação
+  duplicatedFromName = signal<string | null>(null);
 
   form!: FormGroup;
 
@@ -88,7 +94,7 @@ export class ItemEdit implements OnInit {
       resaleValue: [''],
       withdrawalDate: [this.todayStr()],
       // quantidade (só usada no insert)
-      quantity: [1, [Validators.required, Validators.min(1), Validators.max(99)]],
+      quantity: [1, [Validators.required, Validators.min(1), Validators.max(10)]],
     });
 
     const id = this.route.snapshot.queryParamMap.get('x');
@@ -253,9 +259,16 @@ export class ItemEdit implements OnInit {
     this.situationError.set('');
     this.categoryError.set('');
     this.acquisitionTypeError.set('');
+    this.purchaseValueError.set('');
     let valid = true;
 
-    const { situationId, acquisitionTypeId } = this.form.value;
+    const { situationId, acquisitionTypeId, purchaseValue } = this.form.value;
+
+    const parsedValue = this.parseCurrency(purchaseValue);
+    if (parsedValue !== null && parsedValue > 1_000_000) {
+      this.purchaseValueError.set('Valor máximo permitido é R$ 1.000.000,00.');
+      valid = false;
+    }
 
     if (!situationId || situationId === -1) {
       this.situationError.set('Selecione uma situação válida.');
@@ -311,6 +324,7 @@ export class ItemEdit implements OnInit {
       this.itemApi.insertBulk(payload, quantity).subscribe({
         next: (result) => {
           this.toastService.showSuccess(`${result.count} itens cadastrados!`);
+          this.reuseStrategy.invalidate('home');
           this.router.navigate(['/home']);
         },
         error: (err) => {
@@ -336,6 +350,7 @@ export class ItemEdit implements OnInit {
         }
 
         this.toastService.showSuccess(id ? 'Item atualizado!' : 'Item adicionado!');
+        this.reuseStrategy.invalidate('home');
         this.router.navigate(['/home']);
       },
       error: (err) => {
@@ -365,6 +380,15 @@ export class ItemEdit implements OnInit {
   }
 
   duplicate() {
+    const modalEl = document.getElementById('modalConfirmDuplicate');
+    if (!modalEl) return;
+    (window as any).bootstrap.Modal.getOrCreateInstance(modalEl).show();
+  }
+
+  confirmDuplicate() {
+    const modalEl = document.getElementById('modalConfirmDuplicate');
+    if (modalEl) (window as any).bootstrap.Modal.getOrCreateInstance(modalEl).hide();
+
     const v = this.form.value;
     this.router.navigate(['/item-edit'], {
       state: {
@@ -387,6 +411,7 @@ export class ItemEdit implements OnInit {
   }
 
   private applyPrefill(prefill: any) {
+    this.duplicatedFromName.set(prefill.name ?? null);
     this.form.patchValue({
       name: prefill.name ?? '',
       technicalDescription: prefill.technicalDescription ?? '',
@@ -428,6 +453,7 @@ export class ItemEdit implements OnInit {
     this.itemApi.delete(this.itemId()!).subscribe({
       next: () => {
         this.toastService.showSuccess('Item excluído!');
+        this.reuseStrategy.invalidate('home');
         this.router.navigate(['/home']);
       },
       error: () => {
@@ -471,7 +497,7 @@ export class ItemEdit implements OnInit {
     const el = event.target as HTMLInputElement;
     let val = parseInt(el.value, 10);
     if (isNaN(val) || val < 1) val = 1;
-    if (val > 99) val = 99;
+    if (val > 10) val = 10;
     el.value = String(val);
     this.form.get('quantity')?.setValue(val, { emitEvent: false });
   }

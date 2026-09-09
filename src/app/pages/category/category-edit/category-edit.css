@@ -17,7 +17,7 @@
   display: flex;
   align-items: center;
   gap: 0.375rem;
-  background: none;
+  background: #f3ede6;
   border: 1px solid #ddd6cc;
   border-radius: 8px;
   padding: 0.375rem 0.875rem;

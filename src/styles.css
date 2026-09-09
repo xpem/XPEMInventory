@@ -141,11 +141,10 @@ body {
 /* ----------------------------------------
    Auth brand — signin, signup, update-password
 ---------------------------------------- */
-.brand-dot {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background-color: var(--color-coral);
+.brand-logo {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
   display: inline-block;
   flex-shrink: 0;
 }

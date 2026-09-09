@@ -71,6 +71,25 @@
   color: #1a1a1a;
 }
 
+/* Banner de duplicação */
+.duplicate-banner {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: #fdf3ec;
+  border: 1px solid #e8cbb8;
+  border-radius: 12px;
+  padding: 0.625rem 0.875rem;
+  font-size: 0.85rem;
+  color: #7a4f34;
+  margin-bottom: 0.875rem;
+}
+
+.duplicate-banner i {
+  flex-shrink: 0;
+  color: #c4714a;
+}
+
 /* Sections */
 .form-section {
   background-color: #f6f0e6;

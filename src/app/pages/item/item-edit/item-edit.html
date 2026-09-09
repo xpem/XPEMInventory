@@ -37,6 +37,13 @@
   }
 </div>
 
+@if (duplicatedFromName()) {
+  <div class="duplicate-banner">
+    <i class="bi bi-copy"></i>
+    Duplicado de <strong>{{ duplicatedFromName() }}</strong> — revise os dados e salve.
+  </div>
+}
+
 <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
 
   <!-- Seção: informações básicas -->
@@ -119,6 +126,9 @@
           <input type="text" class="field-input currency-input" id="inputPurchaseValue" formControlName="purchaseValue"
             placeholder="0,00" inputmode="numeric" (input)="onCurrencyInput($event)" />
         </div>
+        @if (purchaseValueError()) {
+          <div class="field-error">{{ purchaseValueError() }}</div>
+        }
       </div>
 
       <div class="field-group">
@@ -256,6 +266,27 @@
 <app-modal-camera (imageSelected)="onImageSelected($event)" />
 
 <app-modal-select-file (imageSelected)="onImageSelected($event)" />
+
+<!-- Modal: Confirmar duplicação -->
+<div class="modal fade" id="modalConfirmDuplicate" tabindex="-1" aria-labelledby="modalConfirmDuplicateLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content confirm-delete-modal">
+      <div class="confirm-delete-header">
+        <i class="bi bi-copy confirm-delete-header-icon"></i>
+        <h5 class="confirm-delete-title" id="modalConfirmDuplicateLabel">Duplicar item?</h5>
+      </div>
+      <div class="confirm-delete-body">
+        <p class="confirm-delete-text">Um novo cadastro será criado com os mesmos dados. A foto não será copiada.</p>
+        <div class="confirm-delete-actions">
+          <button type="button" class="btn-confirm-cancel" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn-confirm-delete" (click)="confirmDuplicate()">
+            <i class="bi bi-copy"></i> Duplicar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- Modal: Confirmar exclusão -->
 <div class="modal fade" id="modalConfirmDelete" tabindex="-1" aria-labelledby="modalConfirmDeleteLabel" aria-hidden="true">

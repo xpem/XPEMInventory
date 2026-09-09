@@ -16,14 +16,6 @@
   flex-shrink: 0;
 }
 
-.sidebar-brand-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background-color: #c4714a;
-  flex-shrink: 0;
-}
-
 .sidebar-brand-name {
   font-size: 1rem;
   font-weight: 700;

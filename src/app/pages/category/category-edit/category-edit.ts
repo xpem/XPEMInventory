@@ -11,6 +11,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { CategoryApiService } from '../../../services/category-api';
 import { SubCategoryApiService } from '../../../services/subcategory-api';
 import { ToastService } from '../../../services/toast.service';
+import { AppRouteReuseStrategy } from '../../../route-reuse-strategy';
 import { CategoryDTO, SubCategoryDTO } from '../../../models/category.model';
 
 // Paleta de cores pré-definida (mesma do Blazor)
@@ -46,6 +47,7 @@ export class CategoryEdit implements OnInit {
   private subCategoryApi = inject(SubCategoryApiService);
   private toastService = inject(ToastService);
   private platformId = inject(PLATFORM_ID);
+  private reuseStrategy = inject(AppRouteReuseStrategy);
 
   readonly COLOR_PALETTE = COLOR_PALETTE;
   readonly BI_ICONS = BI_ICONS;
@@ -157,6 +159,7 @@ export class CategoryEdit implements OnInit {
     obs$.subscribe({
       next: () => {
         this.toastService.showSuccess(id ? 'Categoria atualizada!' : 'Categoria adicionada!');
+        this.reuseStrategy.invalidate('category/list');
         this.router.navigate(['/category/list']);
       },
       error: () => {
@@ -185,6 +188,7 @@ export class CategoryEdit implements OnInit {
     this.categoryApi.delete(id).subscribe({
       next: () => {
         this.toastService.showSuccess('Categoria excluída!');
+        this.reuseStrategy.invalidate('category/list');
         this.router.navigate(['/category/list']);
       },
       error: () => this.toastService.showError('Erro ao excluir categoria.'),
