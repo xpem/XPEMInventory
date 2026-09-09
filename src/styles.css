@@ -8,7 +8,7 @@
   --color-coral-dark:   #a85e3a;
   --color-coral-shadow: rgba(196, 113, 74, 0.12);
 
-  --bg-app:   #faf6ee;
+  --bg-app:   #dccdb4;
   --bg-card:  white;
   --bg-input: #fdfaf6;
 
@@ -37,10 +37,7 @@ h1 { font-family: 'Boogaloo', 'Nunito', sans-serif; }
 body {
   margin: 0;
   font-family: 'Nunito', 'Helvetica Neue', sans-serif;
-  background:
-    radial-gradient(ellipse at 15% 10%, rgba(180, 180, 215, 0.45) 0%, transparent 45%),
-    radial-gradient(ellipse at 85% 90%, rgba(210, 150, 120, 0.35) 0%, transparent 45%),
-    var(--bg-app);
+  background-color: #dccdb4;
   min-height: 100vh;
 }
 

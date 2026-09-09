@@ -1,10 +1,7 @@
 .signin-page {
   position: fixed;
   inset: 0;
-  background:
-    radial-gradient(ellipse at 15% 10%, rgba(180, 180, 215, 0.45) 0%, transparent 45%),
-    radial-gradient(ellipse at 85% 90%, rgba(210, 150, 120, 0.35) 0%, transparent 45%),
-    #faf6ee;
+  background-color: #dccdb4;
   display: flex;
   align-items: center;
   justify-content: center;
