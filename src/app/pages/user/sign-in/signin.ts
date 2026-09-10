@@ -98,10 +98,12 @@ export class SignIn implements OnInit, AfterViewInit {
 
     this.userApi.signIn(this.form.value).subscribe({
       next: (response) => {
+        console.log('[signIn] success', response);
         this.authService.saveTokens(response, this.form.value.rememberMe);
         this.router.navigate(['/home']);
       },
       error: (error: HttpErrorResponse) => {
+        console.error('[signIn] error', error);
         const code = error.error?.errorCode;
         if (code === 5) {
           this.toastService.showError('Email ou senha inválidos.');

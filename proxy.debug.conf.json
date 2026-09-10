@@ -1,0 +1,10 @@
+{
+  "/api": {
+    "_target_prod": "https://xpem.com.br",
+    "target": "https://localhost:44303",
+    "secure": false,
+    "changeOrigin": true,
+    "pathRewrite": { "^/api": "" },
+    "logLevel": "debug"
+  }
+}
