@@ -12,16 +12,27 @@
     <button type="button" class="btn-back" (click)="goBack()">
       <i class="bi bi-arrow-left"></i> Voltar
     </button>
-    @if (!isInsert() && !isSystemDefault()) {
-      <button
-        type="button"
-        class="btn-delete"
-        data-bs-toggle="modal"
-        data-bs-target="#deleteCategoryModal"
-        (click)="confirmDeleteCategory()"
-      >
-        <i class="bi bi-trash"></i> Excluir
-      </button>
+    @if (!isInsert()) {
+      <div class="topbar-actions">
+        @if (!isSystemDefault()) {
+          <button type="button" class="btn-historic" (click)="openCatHistoric()">
+            <i class="bi bi-clock-history"></i> Histórico
+          </button>
+          <button
+            type="button"
+            class="btn-delete"
+            data-bs-toggle="modal"
+            data-bs-target="#deleteCategoryModal"
+            (click)="confirmDeleteCategory()"
+          >
+            <i class="bi bi-trash"></i> Excluir
+          </button>
+        } @else {
+          <button type="button" class="btn-historic" (click)="openCatHistoric()">
+            <i class="bi bi-clock-history"></i> Histórico
+          </button>
+        }
+      </div>
     }
   </div>
 
@@ -118,8 +129,16 @@
             <i [class]="'bi bi-' + (sub.iconName ?? 'tag')"></i>
           </div>
           <span class="sub-item-name">{{ sub.name }}</span>
-          @if (!sub.systemDefault) {
-            <div class="sub-item-actions">
+          <div class="sub-item-actions">
+            <button
+              type="button"
+              class="btn-icon-action"
+              (click)="openSubHistoric(sub.id)"
+              title="Histórico"
+            >
+              <i class="bi bi-clock-history"></i>
+            </button>
+            @if (!sub.systemDefault) {
               <button
                 type="button"
                 class="btn-icon-action"
@@ -138,8 +157,8 @@
               >
                 <i class="bi bi-trash"></i>
               </button>
-            </div>
-          }
+            }
+          </div>
         </div>
       }
 
@@ -218,6 +237,12 @@
       }
     </div>
   }
+}
+
+<!-- Offcanvas: Histórico categoria e subcategoria -->
+@if (!isInsert()) {
+  <app-offcanvas-cat-historic [categoryId]="categoryId()!" />
+  <app-offcanvas-sub-historic />
 }
 
 <!-- Modal: excluir categoria -->

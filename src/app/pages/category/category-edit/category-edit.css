@@ -50,6 +50,31 @@
   background-color: rgba(239, 68, 68, 0.08);
 }
 
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-historic {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  background: #f3ede6;
+  border: 1px solid #ddd6cc;
+  border-radius: 8px;
+  padding: 0.375rem 0.875rem;
+  font-size: 0.875rem;
+  color: #6b5c4e;
+  cursor: pointer;
+  transition: background-color 0.15s, color 0.15s;
+}
+
+.btn-historic:hover {
+  background-color: #ece4da;
+  color: #c4714a;
+}
+
 .edit-title {
   font-size: 1.75rem;
   font-weight: 700;

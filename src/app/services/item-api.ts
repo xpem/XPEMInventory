@@ -8,6 +8,7 @@ import {
   ItemSituation,
   ItemSearchParams,
 } from '../models/item.model';
+import { ItemHistoric } from '../models/historic.model';
 
 @Injectable({ providedIn: 'root' })
 export class ItemApiService {
@@ -92,6 +93,15 @@ export class ItemApiService {
   /** DELETE /Inventory/item/:id */
   delete(id: number): Observable<void> {
     return this.http.delete<void>(`${this.base}/${id}`);
+  }
+
+  // -------------------------------------------------------
+  // Histórico
+  // -------------------------------------------------------
+
+  /** GET /Inventory/item/:id/historic */
+  getHistoric(id: number): Observable<ItemHistoric[]> {
+    return this.http.get<ItemHistoric[]>(`${this.base}/${id}/historic`);
   }
 
   // -------------------------------------------------------

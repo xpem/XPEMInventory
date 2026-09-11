@@ -2,6 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { SubCategoryDTO } from '../models/category.model';
+import { SubCategoryHistoric } from '../models/historic.model';
 
 @Injectable({ providedIn: 'root' })
 export class SubCategoryApiService {
@@ -52,5 +53,14 @@ export class SubCategoryApiService {
   /** DELETE /Inventory/subCategory/:id */
   delete(id: number): Observable<void> {
     return this.http.delete<void>(`/api/Inventory/subCategory/${id}`);
+  }
+
+  // -------------------------------------------------------
+  // Histórico
+  // -------------------------------------------------------
+
+  /** GET /Inventory/subcategory/:id/historic */
+  getHistoric(id: number): Observable<SubCategoryHistoric[]> {
+    return this.http.get<SubCategoryHistoric[]>(`${this.base}/${id}/historic`);
   }
 }

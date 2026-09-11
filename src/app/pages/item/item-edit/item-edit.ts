@@ -23,11 +23,12 @@ import { ModalCategories } from './components/modal-categories/modal-categories'
 import { ModalSubCategories } from './components/modal-subcategories/modal-subcategories';
 import { ModalCamera } from './components/modal-camera/modal-camera';
 import { ModalSelectFile } from './components/modal-select-file/modal-select-file';
+import { OffcanvasHistoric } from './components/offcanvas-historic/offcanvas-historic';
 
 @Component({
   selector: 'app-item-edit',
   standalone: true,
-  imports: [ReactiveFormsModule, ModalCategories, ModalSubCategories, ModalCamera, ModalSelectFile],
+  imports: [ReactiveFormsModule, ModalCategories, ModalSubCategories, ModalCamera, ModalSelectFile, OffcanvasHistoric],
   templateUrl: './item-edit.html',
   styleUrl: './item-edit.css',
 })
@@ -251,6 +252,11 @@ export class ItemEdit implements OnInit {
   }
 
   @ViewChild(ModalCamera) cameraRef?: ModalCamera;
+  @ViewChild(OffcanvasHistoric) historicRef?: OffcanvasHistoric;
+
+  openHistoric() {
+    this.historicRef?.open();
+  }
 
   // -------------------------------------------------------
   // Validação

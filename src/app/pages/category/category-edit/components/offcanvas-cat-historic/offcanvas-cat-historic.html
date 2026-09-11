@@ -1,0 +1,54 @@
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasCatHistoric" aria-labelledby="offcanvasCatHistoricLabel">
+
+  <div class="historic-header">
+    <div class="historic-header-top">
+      <h5 class="historic-title" id="offcanvasCatHistoricLabel">Histórico de alterações</h5>
+      <button type="button" class="btn-close-historic" data-bs-dismiss="offcanvas" aria-label="Fechar">
+        <i class="bi bi-x"></i>
+      </button>
+    </div>
+    <p class="historic-subtitle">Linha do tempo das mudanças nesta categoria.</p>
+  </div>
+
+  <div class="offcanvas-body historic-body">
+
+    @if (isLoading()) {
+      <div class="historic-loading">
+        <div class="spinner-border spinner-coral" role="status">
+          <span class="visually-hidden">Carregando...</span>
+        </div>
+      </div>
+    } @else if (hasError()) {
+      <div class="historic-empty">
+        <i class="bi bi-exclamation-circle historic-empty-icon"></i>
+        <p>Erro ao carregar o histórico.</p>
+      </div>
+    } @else if (!historic().length) {
+      <div class="historic-empty">
+        <i class="bi bi-clock-history historic-empty-icon"></i>
+        <p>Nenhuma alteração registrada ainda.</p>
+      </div>
+    } @else {
+      <ul class="timeline">
+        @for (entry of historic(); track entry.id; let last = $last) {
+          <li class="timeline-item" [class.timeline-item-last]="last">
+            <div class="timeline-icon" [class.timeline-icon-create]="entry.typeId === 1">
+              <i class="bi" [class]="entryIcon(entry.typeId)"></i>
+            </div>
+            <div class="timeline-card">
+              <div class="timeline-card-top">
+                <span class="timeline-card-title">{{ entryTitle(entry) }}</span>
+                <span class="timeline-card-date">
+                  {{ entry.createdAt | date:'dd/MM/yyyy' }} às {{ entry.createdAt | date:'HH:mm' }}
+                </span>
+              </div>
+              <p class="timeline-card-desc">{{ entryDescription(entry) }}</p>
+              <span class="timeline-card-author">Por você</span>
+            </div>
+          </li>
+        }
+      </ul>
+    }
+
+  </div>
+</div>
