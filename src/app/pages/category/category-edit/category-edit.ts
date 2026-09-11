@@ -4,6 +4,7 @@ import {
   inject,
   signal,
   PLATFORM_ID,
+  ViewChild,
 } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -13,6 +14,8 @@ import { SubCategoryApiService } from '../../../services/subcategory-api';
 import { ToastService } from '../../../services/toast.service';
 import { AppRouteReuseStrategy } from '../../../route-reuse-strategy';
 import { CategoryDTO, SubCategoryDTO } from '../../../models/category.model';
+import { OffcanvasCatHistoric } from './components/offcanvas-cat-historic/offcanvas-cat-historic';
+import { OffcanvasSubHistoric } from './components/offcanvas-sub-historic/offcanvas-sub-historic';
 
 // Paleta de cores pré-definida (mesma do Blazor)
 export const COLOR_PALETTE = [
@@ -35,7 +38,7 @@ export const BI_ICONS = [
 @Component({
   selector: 'app-category-edit',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, OffcanvasCatHistoric, OffcanvasSubHistoric],
   templateUrl: './category-edit.html',
   styleUrl: './category-edit.css',
 })
@@ -283,6 +286,17 @@ export class CategoryEdit implements OnInit {
       },
       error: () => this.toastService.showError('Erro ao excluir subcategoria.'),
     });
+  }
+
+  // -------------------------------------------------------
+  // Histórico
+  // -------------------------------------------------------
+  @ViewChild(OffcanvasCatHistoric) catHistoricRef?: OffcanvasCatHistoric;
+  @ViewChild(OffcanvasSubHistoric) subHistoricRef?: OffcanvasSubHistoric;
+
+  openCatHistoric() { this.catHistoricRef?.open(); }
+  openSubHistoric(subId: number | null | undefined) {
+    if (subId != null) this.subHistoricRef?.open(subId);
   }
 
   // -------------------------------------------------------

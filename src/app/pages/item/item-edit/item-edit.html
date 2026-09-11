@@ -19,6 +19,11 @@
     </button>
     <ul class="dropdown-menu dropdown-list">
       <li>
+        <button class="dropdown-item" type="button" (click)="openHistoric()">
+          <i class="bi bi-clock-history"></i> Histórico
+        </button>
+      </li>
+      <li>
         <button class="dropdown-item" type="button" (click)="duplicate()">
           <i class="bi bi-copy"></i> Duplicar
         </button>
@@ -255,6 +260,11 @@
   </div>
 
 </form>
+}
+
+<!-- Offcanvas: Histórico -->
+@if (!isInsert()) {
+  <app-offcanvas-historic [itemId]="itemId()!" />
 }
 
 <!-- Modais -->
