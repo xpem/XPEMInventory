@@ -72,6 +72,13 @@ export class ItemApiService {
     return this.http.get<ItemDTO>(`${this.base}/${id}`);
   }
 
+  /** GET /Inventory/item/exists-by-name — verifica se já existe um item com esse nome */
+  checkNameExists(name: string, excludeId?: number | null): Observable<{ exists: boolean }> {
+    let params = new HttpParams().set('name', name);
+    if (excludeId != null) params = params.set('excludeId', excludeId);
+    return this.http.get<{ exists: boolean }>(`${this.base}/exists-by-name`, { params });
+  }
+
   /** POST /Inventory/item */
   insert(item: Partial<ItemDTO>): Observable<ItemDTO> {
     return this.http.post<ItemDTO>(this.base, this.buildPayload(item));
@@ -93,6 +100,20 @@ export class ItemApiService {
   /** DELETE /Inventory/item/:id */
   delete(id: number): Observable<void> {
     return this.http.delete<void>(`${this.base}/${id}`);
+  }
+
+  // -------------------------------------------------------
+  // Associação entre itens (item pai/filho)
+  // -------------------------------------------------------
+
+  /** GET /Inventory/item/:id/children — itens associados a este item */
+  getChildren(id: number): Observable<ItemDTO[]> {
+    return this.http.get<ItemDTO[]>(`${this.base}/${id}/children`);
+  }
+
+  /** PUT /Inventory/item/:id/parent — associa (ou remove, com null) o item a um pai */
+  setParentItem(id: number, parentItemId: number | null): Observable<ItemDTO> {
+    return this.http.put<ItemDTO>(`${this.base}/${id}/parent`, { parentItemId });
   }
 
   // -------------------------------------------------------
@@ -163,6 +184,7 @@ export class ItemApiService {
       withdrawalDate: item.withdrawalDate
         ? item.withdrawalDate.substring(0, 10)
         : null,
+      parentItemId: item.parentItem?.id ?? null,
     };
   }
 }

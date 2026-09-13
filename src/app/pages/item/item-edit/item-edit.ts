@@ -16,6 +16,8 @@ import {
   AcquisitionType,
   ItemSituation,
   ItemConfigsApiResp,
+  ItemDTO,
+  ItemParentDTO,
   RESALE_STATUS_ID,
 } from '../../../models/item.model';
 import { CategoryDTO } from '../../../models/category.model';
@@ -74,6 +76,31 @@ export class ItemEdit implements OnInit {
   // Duplicação
   duplicatedFromName = signal<string | null>(null);
 
+  // Nome original (edição) — usado para saber se o nome mudou e precisa checar duplicidade
+  private originalName = signal<string | null>(null);
+  isCheckingName = signal(false);
+  duplicateNameCandidate = signal<string | null>(null);
+
+  // Associação — controla se a seção aparece (em edição, só ao clicar no menu ou se já houver associação)
+  showAssociationSection = signal(false);
+
+  // Associação — este item associado a um item pai (ex: SSD associado a um Desktop)
+  selectedParentItem = signal<ItemParentDTO | null>(null);
+  showParentSearch = signal(false);
+  parentSearchQuery = signal('');
+  parentSearchResults = signal<ItemDTO[]>([]);
+  isSearchingParent = signal(false);
+  private parentSearchTimeout?: ReturnType<typeof setTimeout>;
+
+  // Associação — itens associados a este item (só existe em edição)
+  childItems = signal<ItemDTO[]>([]);
+  showChildSearch = signal(false);
+  childSearchQuery = signal('');
+  childSearchResults = signal<ItemDTO[]>([]);
+  isSearchingChild = signal(false);
+  isAssociatingChild = signal(false);
+  private childSearchTimeout?: ReturnType<typeof setTimeout>;
+
   form!: FormGroup;
 
   // -------------------------------------------------------
@@ -98,18 +125,68 @@ export class ItemEdit implements OnInit {
       quantity: [1, [Validators.required, Validators.min(1), Validators.max(10)]],
     });
 
-    const id = this.route.snapshot.queryParamMap.get('x');
+    this.loadConfigs().then(() => {
+      this.route.queryParamMap.subscribe((params) => {
+        this.loadForId(params.get('x'));
+      });
+    });
+  }
+
+  /** (Re)inicializa o formulário para o item da rota atual. Necessário porque o Angular
+   * reaproveita a instância do componente ao navegar de /item/edit?x=N para /item/edit
+   * (ex.: duplicar item), então isso não pode viver só no ngOnInit. */
+  private loadForId(id: string | null) {
+    this.isLoading.set(true);
+    this.duplicatedFromName.set(null);
+    this.imageDataUrl.set(null);
+    this.originalImageName.set(null);
+    this.originalName.set(null);
+    this.showAssociationSection.set(false);
+    this.selectedParentItem.set(null);
+    this.showParentSearch.set(false);
+    this.parentSearchQuery.set('');
+    this.parentSearchResults.set([]);
+    this.childItems.set([]);
+    this.showChildSearch.set(false);
+    this.childSearchQuery.set('');
+    this.childSearchResults.set([]);
+
     if (id) {
       this.isInsert.set(false);
       this.itemId.set(Number(id));
-      this.loadConfigs().then(() => this.loadItem(Number(id)));
+      this.loadItem(Number(id));
     } else {
-      this.loadConfigs().then(() => {
-        const prefill = (history as any).state?.prefill;
-        if (prefill) this.applyPrefill(prefill);
-        this.isLoading.set(false);
-      });
+      this.isInsert.set(true);
+      this.itemId.set(null);
+      this.resetFormDefaults();
+      const prefill = (history as any).state?.prefill;
+      if (prefill) this.applyPrefill(prefill);
+      this.isLoading.set(false);
     }
+  }
+
+  private resetFormDefaults() {
+    this.form.reset({
+      name: '',
+      technicalDescription: '',
+      acquisitionDate: this.todayStr(),
+      situationId: null,
+      acquisitionTypeId: null,
+      purchaseValue: '',
+      purchaseStore: '',
+      comment: '',
+      resaleValue: '',
+      withdrawalDate: this.todayStr(),
+      quantity: 1,
+    });
+    const noCategory = this.categories()[0] ?? null;
+    this.selectedCategory.set(noCategory);
+    this.selectedSubCategoryId.set(null);
+    this.categoryBtnLabel.set(noCategory?.name ?? 'Selecionar Categoria');
+    this.categoryError.set('');
+    this.situationError.set('');
+    this.acquisitionTypeError.set('');
+    this.purchaseValueError.set('');
   }
 
   // -------------------------------------------------------
@@ -141,6 +218,7 @@ export class ItemEdit implements OnInit {
   private loadItem(id: number) {
     this.itemApi.getById(id).subscribe({
       next: (item) => {
+        this.originalName.set(item.name ?? null);
         this.form.patchValue({
           name: item.name ?? '',
           technicalDescription: item.technicalDescription ?? '',
@@ -187,6 +265,19 @@ export class ItemEdit implements OnInit {
             },
           });
         }
+
+        // Associação
+        if (item.parentItem?.id != null) {
+          this.selectedParentItem.set({ id: item.parentItem.id, name: item.parentItem.name });
+          this.showAssociationSection.set(true);
+        }
+        this.itemApi.getChildren(id).subscribe({
+          next: (children) => {
+            this.childItems.set(children ?? []);
+            if ((children?.length ?? 0) > 0) this.showAssociationSection.set(true);
+          },
+          error: () => {},
+        });
 
         this.isLoading.set(false);
       },
@@ -259,6 +350,149 @@ export class ItemEdit implements OnInit {
   }
 
   // -------------------------------------------------------
+  // Associação — este item associado a um item pai
+  // -------------------------------------------------------
+  toggleParentSearch() {
+    this.showParentSearch.set(!this.showParentSearch());
+    this.parentSearchQuery.set('');
+    this.parentSearchResults.set([]);
+  }
+
+  /** Aberto pelo menu de 3 pontos (edição) — revela a seção e rola até ela */
+  toggleAssociationSection() {
+    this.showAssociationSection.set(true);
+    if (isPlatformBrowser(this.platformId)) {
+      setTimeout(() => {
+        document.getElementById('assocSection')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    }
+  }
+
+  /** Em edição, a seção só aparece via menu (ou se já houver associação); no cadastro, sempre visível */
+  get showAssociationForm(): boolean {
+    if (this.isInsert()) return Number(this.form?.value?.quantity) <= 1;
+    return this.showAssociationSection();
+  }
+
+  onParentSearchInput(event: Event) {
+    const query = (event.target as HTMLInputElement).value;
+    this.parentSearchQuery.set(query);
+
+    if (this.parentSearchTimeout) clearTimeout(this.parentSearchTimeout);
+
+    if (!query.trim()) {
+      this.parentSearchResults.set([]);
+      return;
+    }
+
+    this.parentSearchTimeout = setTimeout(() => {
+      this.isSearchingParent.set(true);
+      this.itemApi.getPaginatedSearch(1, { name: query }).subscribe({
+        next: (results) => {
+          this.isSearchingParent.set(false);
+          const currentId = this.itemId();
+          // só itens sem pai podem virar pai (limite de 2 níveis)
+          this.parentSearchResults.set(
+            results.filter((r) => r.id !== currentId && r.parentItem == null),
+          );
+        },
+        error: () => this.isSearchingParent.set(false),
+      });
+    }, 350);
+  }
+
+  selectParentItem(item: ItemDTO) {
+    if (item.id == null) return;
+    this.selectedParentItem.set({ id: item.id, name: item.name ?? '' });
+    this.showParentSearch.set(false);
+    this.parentSearchQuery.set('');
+    this.parentSearchResults.set([]);
+  }
+
+  clearParentItem() {
+    this.selectedParentItem.set(null);
+  }
+
+  // -------------------------------------------------------
+  // Associação — itens associados a este item
+  // -------------------------------------------------------
+  toggleChildSearch() {
+    this.showChildSearch.set(!this.showChildSearch());
+    this.childSearchQuery.set('');
+    this.childSearchResults.set([]);
+  }
+
+  onChildSearchInput(event: Event) {
+    const query = (event.target as HTMLInputElement).value;
+    this.childSearchQuery.set(query);
+
+    if (this.childSearchTimeout) clearTimeout(this.childSearchTimeout);
+
+    if (!query.trim()) {
+      this.childSearchResults.set([]);
+      return;
+    }
+
+    this.childSearchTimeout = setTimeout(() => {
+      this.isSearchingChild.set(true);
+      this.itemApi.getPaginatedSearch(1, { name: query }).subscribe({
+        next: (results) => {
+          this.isSearchingChild.set(false);
+          const currentId = this.itemId();
+          const childIds = new Set(this.childItems().map((c) => c.id));
+          // só itens sem pai e ainda não associados aqui aparecem como candidatos
+          this.childSearchResults.set(
+            results.filter((r) => r.id !== currentId && r.parentItem == null && !childIds.has(r.id)),
+          );
+        },
+        error: () => this.isSearchingChild.set(false),
+      });
+    }, 350);
+  }
+
+  associateChild(item: ItemDTO) {
+    const parentId = this.itemId();
+    if (!parentId || item.id == null || this.isAssociatingChild()) return;
+
+    this.isAssociatingChild.set(true);
+    this.itemApi.setParentItem(item.id, parentId).subscribe({
+      next: (updated) => {
+        this.isAssociatingChild.set(false);
+        this.childItems.update((list) => [updated, ...list]);
+        this.showChildSearch.set(false);
+        this.childSearchQuery.set('');
+        this.childSearchResults.set([]);
+        this.toastService.showSuccess('Item associado!');
+      },
+      error: (err) => {
+        this.isAssociatingChild.set(false);
+        this.toastService.showError(this.extractErrorMessage(err, 'Não foi possível associar o item.'));
+      },
+    });
+  }
+
+  removeChildAssociation(item: ItemDTO) {
+    if (item.id == null || this.isAssociatingChild()) return;
+
+    this.isAssociatingChild.set(true);
+    this.itemApi.setParentItem(item.id, null).subscribe({
+      next: () => {
+        this.isAssociatingChild.set(false);
+        this.childItems.update((list) => list.filter((c) => c.id !== item.id));
+        this.toastService.showSuccess('Associação removida!');
+      },
+      error: (err) => {
+        this.isAssociatingChild.set(false);
+        this.toastService.showError(this.extractErrorMessage(err, 'Não foi possível remover a associação.'));
+      },
+    });
+  }
+
+  private extractErrorMessage(err: any, fallback: string): string {
+    return err?.error?.error?.message || fallback;
+  }
+
+  // -------------------------------------------------------
   // Validação
   // -------------------------------------------------------
   private validate(): boolean {
@@ -297,7 +531,47 @@ export class ItemEdit implements OnInit {
   // Submit
   // -------------------------------------------------------
   async onSubmit() {
-    if (!this.validate() || this.isSaving()) return;
+    if (!this.validate() || this.isSaving() || this.isCheckingName()) return;
+
+    const name = this.form.value.name?.trim();
+    const nameChanged = name && name !== this.originalName();
+
+    if (nameChanged) {
+      this.isCheckingName.set(true);
+      this.itemApi.checkNameExists(name, this.itemId()).subscribe({
+        next: (res) => {
+          this.isCheckingName.set(false);
+          if (res.exists) {
+            this.duplicateNameCandidate.set(name);
+            this.openDuplicateNameModal();
+          } else {
+            this.performSave();
+          }
+        },
+        error: () => {
+          this.isCheckingName.set(false);
+          this.performSave();
+        },
+      });
+    } else {
+      this.performSave();
+    }
+  }
+
+  private openDuplicateNameModal() {
+    const modalEl = document.getElementById('modalConfirmDuplicateName');
+    if (!modalEl) return;
+    (window as any).bootstrap.Modal.getOrCreateInstance(modalEl).show();
+  }
+
+  /** Confirma o cadastro/edição mesmo já existindo um item com o mesmo nome */
+  confirmSaveWithDuplicateName() {
+    const modalEl = document.getElementById('modalConfirmDuplicateName');
+    if (modalEl) (window as any).bootstrap.Modal.getOrCreateInstance(modalEl).hide();
+    this.performSave();
+  }
+
+  private performSave() {
     this.isSaving.set(true);
 
     const v = this.form.value;
@@ -321,6 +595,7 @@ export class ItemEdit implements OnInit {
       },
       resaleValue: isResale ? this.parseCurrency(v.resaleValue) : null,
       withdrawalDate: isResale ? v.withdrawalDate : null,
+      parentItem: this.selectedParentItem() ? { id: this.selectedParentItem()!.id } : null,
     };
 
     const id = this.itemId();
@@ -396,7 +671,7 @@ export class ItemEdit implements OnInit {
     if (modalEl) (window as any).bootstrap.Modal.getOrCreateInstance(modalEl).hide();
 
     const v = this.form.value;
-    this.router.navigate(['/item-edit'], {
+    this.router.navigate(['/item/edit'], {
       state: {
         prefill: {
           name: v.name,
@@ -411,6 +686,7 @@ export class ItemEdit implements OnInit {
           categoryId: this.selectedCategory()?.id,
           subCategoryId: this.selectedSubCategoryId(),
           categoryLabel: this.categoryBtnLabel(),
+          parentItem: this.selectedParentItem(),
         },
       },
     });
@@ -430,6 +706,10 @@ export class ItemEdit implements OnInit {
       resaleValue: prefill.resaleValue ?? '',
       withdrawalDate: prefill.withdrawalDate ?? this.todayStr(),
     });
+
+    if (prefill.parentItem?.id != null) {
+      this.selectedParentItem.set(prefill.parentItem);
+    }
 
     if (prefill.categoryId != null) {
       const cat = this.categories().find((c) => c.id === prefill.categoryId) ?? null;

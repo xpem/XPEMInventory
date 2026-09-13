@@ -1,8 +1,14 @@
 :host {
   display: block;
   padding: 1.25rem 1rem;
-  max-width: 800px;
+  max-width: 1600px;
   margin: 0 auto;
+}
+
+@media (min-width: 768px) {
+  :host {
+    padding: 1.5rem 2rem;
+  }
 }
 
 .home-header {
@@ -213,7 +219,7 @@
 
 .items-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 0.875rem;
 }
 

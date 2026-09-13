@@ -35,4 +35,9 @@ export class AppRouteReuseStrategy implements RouteReuseStrategy {
   invalidate(path: string): void {
     this.cache.delete(path);
   }
+
+  /** Limpa todo o cache de rotas reutilizáveis (ex.: troca de usuário) */
+  clear(): void {
+    this.cache.clear();
+  }
 }
