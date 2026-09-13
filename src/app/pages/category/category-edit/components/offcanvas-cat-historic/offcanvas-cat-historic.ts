@@ -8,7 +8,7 @@ import { CategoryHistoric } from '../../../../../models/historic.model';
   standalone: true,
   imports: [DatePipe],
   templateUrl: './offcanvas-cat-historic.html',
-  styleUrl: './offcanvas-cat-historic.css',
+  styleUrl: '../../../../../shared/styles/offcanvas-historic.css',
 })
 export class OffcanvasCatHistoric {
   @Input() categoryId!: number;

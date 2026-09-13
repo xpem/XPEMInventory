@@ -85,6 +85,7 @@ export class ModalCamera implements OnDestroy {
     this.stream?.getTracks().forEach((t) => t.stop());
     this.stream = null;
     this.isCameraActive.set(false);
+    if (!isPlatformBrowser(this.platformId)) return;
     const video = document.getElementById('cameraVideoFeed') as HTMLVideoElement;
     if (video) video.srcObject = null;
   }

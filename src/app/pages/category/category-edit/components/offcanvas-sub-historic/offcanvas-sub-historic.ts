@@ -8,7 +8,7 @@ import { SubCategoryHistoric } from '../../../../../models/historic.model';
   standalone: true,
   imports: [DatePipe],
   templateUrl: './offcanvas-sub-historic.html',
-  styleUrl: './offcanvas-sub-historic.css',
+  styleUrl: '../../../../../shared/styles/offcanvas-historic.css',
 })
 export class OffcanvasSubHistoric {
   private subCategoryApi = inject(SubCategoryApiService);
