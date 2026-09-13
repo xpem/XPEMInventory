@@ -8,7 +8,7 @@ import { ItemHistoric } from '../../../../../models/historic.model';
   standalone: true,
   imports: [DatePipe],
   templateUrl: './offcanvas-historic.html',
-  styleUrl: './offcanvas-historic.css',
+  styleUrl: '../../../../../shared/styles/offcanvas-historic.css',
 })
 export class OffcanvasHistoric {
   @Input() itemId!: number;
