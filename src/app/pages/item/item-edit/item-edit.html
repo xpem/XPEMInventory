@@ -24,6 +24,11 @@
         </button>
       </li>
       <li>
+        <button class="dropdown-item" type="button" (click)="toggleAssociationSection()">
+          <i class="bi bi-link-45deg"></i> Associação
+        </button>
+      </li>
+      <li>
         <button class="dropdown-item" type="button" (click)="duplicate()">
           <i class="bi bi-copy"></i> Duplicar
         </button>
@@ -207,6 +212,129 @@
     </div>
   </div>
 
+  <!-- Seção: Associação entre itens (só aparece via menu, se já houver associação, ou sempre no cadastro) -->
+  <div class="form-section" id="assocSection" [hidden]="!showAssociationForm">
+    <h2 class="section-title">Associação</h2>
+
+    <!-- Este item associado a um item pai -->
+    <div class="field-group">
+      <label class="field-label">Associado a</label>
+
+      @if (selectedParentItem()) {
+        <div class="assoc-chip">
+          <i class="bi bi-link-45deg"></i>
+          <span>{{ selectedParentItem()!.name }}</span>
+          <button type="button" class="assoc-chip-remove" (click)="clearParentItem()" aria-label="Remover associação">
+            <i class="bi bi-x-lg"></i>
+          </button>
+        </div>
+      } @else if (!showParentSearch()) {
+        <button type="button" class="btn-assoc" (click)="toggleParentSearch()">
+          <i class="bi bi-link-45deg"></i> Associar a outro item
+        </button>
+      }
+
+      @if (showParentSearch()) {
+        <div class="assoc-search">
+          <div class="assoc-search-input-row">
+            <input
+              type="text"
+              class="field-input"
+              placeholder="Buscar item pelo nome..."
+              [value]="parentSearchQuery()"
+              (input)="onParentSearchInput($event)"
+            />
+            <button type="button" class="assoc-search-close" (click)="toggleParentSearch()" aria-label="Fechar busca">
+              <i class="bi bi-x-lg"></i>
+            </button>
+          </div>
+
+          @if (isSearchingParent()) {
+            <div class="assoc-search-hint">Buscando...</div>
+          } @else if (parentSearchQuery().trim() && parentSearchResults().length === 0) {
+            <div class="assoc-search-hint">Nenhum item encontrado.</div>
+          }
+
+          @if (parentSearchResults().length > 0) {
+            <ul class="assoc-search-results">
+              @for (result of parentSearchResults(); track result.id) {
+                <li>
+                  <button type="button" (click)="selectParentItem(result)">
+                    <span>{{ result.name }}</span>
+                    @if (result.category?.name) { <small>{{ result.category?.name }}</small> }
+                  </button>
+                </li>
+              }
+            </ul>
+          }
+        </div>
+      }
+    </div>
+
+    <!-- Itens associados a este item (só existe em edição) -->
+    @if (!isInsert()) {
+      <div class="field-group" style="margin-bottom: 0">
+        <label class="field-label">Itens associados a este</label>
+
+        @if (childItems().length > 0) {
+          <ul class="assoc-children-list">
+            @for (child of childItems(); track child.id) {
+              <li>
+                <span>{{ child.name }}</span>
+                <button type="button" class="assoc-chip-remove" (click)="removeChildAssociation(child)"
+                  [disabled]="isAssociatingChild()" aria-label="Remover associação">
+                  <i class="bi bi-x-lg"></i>
+                </button>
+              </li>
+            }
+          </ul>
+        }
+
+        @if (!showChildSearch()) {
+          <button type="button" class="btn-assoc" (click)="toggleChildSearch()">
+            <i class="bi bi-link-45deg"></i> Associar item existente
+          </button>
+        }
+
+        @if (showChildSearch()) {
+          <div class="assoc-search">
+            <div class="assoc-search-input-row">
+              <input
+                type="text"
+                class="field-input"
+                placeholder="Buscar item pelo nome..."
+                [value]="childSearchQuery()"
+                (input)="onChildSearchInput($event)"
+              />
+              <button type="button" class="assoc-search-close" (click)="toggleChildSearch()" aria-label="Fechar busca">
+                <i class="bi bi-x-lg"></i>
+              </button>
+            </div>
+
+            @if (isSearchingChild()) {
+              <div class="assoc-search-hint">Buscando...</div>
+            } @else if (childSearchQuery().trim() && childSearchResults().length === 0) {
+              <div class="assoc-search-hint">Nenhum item encontrado.</div>
+            }
+
+            @if (childSearchResults().length > 0) {
+              <ul class="assoc-search-results">
+                @for (result of childSearchResults(); track result.id) {
+                  <li>
+                    <button type="button" (click)="associateChild(result)" [disabled]="isAssociatingChild()">
+                      <span>{{ result.name }}</span>
+                      @if (result.category?.name) { <small>{{ result.category?.name }}</small> }
+                    </button>
+                  </li>
+                }
+              </ul>
+            }
+          </div>
+        }
+      </div>
+    }
+  </div>
+
     <!-- Seção: Foto (oculta no cadastro em lote) -->
     <div class="form-section photo-section" [hidden]="isInsert() && f['quantity'].value > 1">
       @if (!imageDataUrl()) {
@@ -242,19 +370,21 @@
 
   <!-- Botão salvar fixo -->
   <div class="save-btn-container">
-    @if (!isSaving()) {
-    @if (isInsert()) {
+    @if (isSaving()) {
+    <button type="button" class="btn-save-fixed" disabled>
+      <span class="spinner-grow spinner-grow-sm" aria-hidden="true"></span> Salvando...
+    </button>
+    } @else if (isCheckingName()) {
+    <button type="button" class="btn-save-fixed" disabled>
+      <span class="spinner-grow spinner-grow-sm" aria-hidden="true"></span> Verificando...
+    </button>
+    } @else if (isInsert()) {
     <button type="submit" class="btn-save-fixed">
       <i class="bi bi-plus-lg"></i> Cadastrar
     </button>
     } @else {
     <button type="submit" class="btn-save-fixed">
       <i class="bi bi-check-lg"></i> Salvar
-    </button>
-    }
-    } @else {
-    <button type="button" class="btn-save-fixed" disabled>
-      <span class="spinner-grow spinner-grow-sm" aria-hidden="true"></span> Salvando...
     </button>
     }
   </div>
@@ -291,6 +421,27 @@
           <button type="button" class="btn-confirm-cancel" data-bs-dismiss="modal">Cancelar</button>
           <button type="button" class="btn-confirm-delete" (click)="confirmDuplicate()">
             <i class="bi bi-copy"></i> Duplicar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Confirmar nome duplicado -->
+<div class="modal fade" id="modalConfirmDuplicateName" tabindex="-1" aria-labelledby="modalConfirmDuplicateNameLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content confirm-delete-modal">
+      <div class="confirm-delete-header">
+        <i class="bi bi-exclamation-triangle confirm-delete-header-icon"></i>
+        <h5 class="confirm-delete-title" id="modalConfirmDuplicateNameLabel">Nome já cadastrado</h5>
+      </div>
+      <div class="confirm-delete-body">
+        <p class="confirm-delete-text">Já existe um item chamado <strong>{{ duplicateNameCandidate() }}</strong>. Deseja continuar mesmo assim?</p>
+        <div class="confirm-delete-actions">
+          <button type="button" class="btn-confirm-cancel" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn-confirm-delete" (click)="confirmSaveWithDuplicateName()">
+            <i class="bi bi-check-lg"></i> Continuar
           </button>
         </div>
       </div>

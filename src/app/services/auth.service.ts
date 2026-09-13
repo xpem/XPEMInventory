@@ -4,12 +4,14 @@ import { HttpClient } from '@angular/common/http';
 import { catchError, map, Observable, of, tap } from 'rxjs';
 import { CookieService } from 'ngx-cookie-service';
 import { TokenResponse } from './user-api';
+import { AppRouteReuseStrategy } from '../route-reuse-strategy';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private http = inject(HttpClient);
   private cookieService = inject(CookieService);
   private platformId = inject(PLATFORM_ID);
+  private routeReuseStrategy = inject(AppRouteReuseStrategy);
 
   private isAuthenticatedSignal = signal<boolean>(false);
   private userNameSignal = signal<string>('');
@@ -56,6 +58,7 @@ export class AuthService {
     this.cookieService.set(this.TOKEN_KEY, response.token, cookieOptions);
     this.cookieService.set(this.REFRESH_TOKEN_KEY, response.refreshToken, cookieOptions);
     this.isAuthenticatedSignal.set(true);
+    this.routeReuseStrategy.clear();
   }
 
   /** @deprecated use saveTokens instead */
@@ -86,6 +89,7 @@ export class AuthService {
     this.isAuthenticatedSignal.set(false);
     this.userNameSignal.set('');
     this.userEmailSignal.set('');
+    this.routeReuseStrategy.clear();
   }
 
   checkSessionStatus(): Observable<boolean> {

@@ -60,12 +60,20 @@ export interface ItemDTO {
   withdrawalDate?: string | null;
   image1?: string | null;
   image2?: string | null;
+  /** Item ao qual este item está associado (ex: um SSD associado a um Desktop) */
+  parentItem?: ItemParentDTO | null;
 
   // Campos calculados para listagem no front
   image1Base64?: string | null;
   isImage1Base64?: boolean;
   categoryAndSubCategory?: string | null;
   subCategoryIcon?: string | null;
+}
+
+/** Referência simplificada a um item pai/filho associado */
+export interface ItemParentDTO {
+  id: number;
+  name?: string | null;
 }
 
 /** Parâmetros de busca para a listagem paginada */
