@@ -1,0 +1,180 @@
+<div class="landing">
+  <header class="landing-nav">
+    <div class="landing-brand">
+      <img src="logo.png" alt="Xpem Inventário" class="brand-logo" />
+      <span class="brand-name">Xpem</span>
+      <span class="brand-badge">INVENTÁRIO</span>
+    </div>
+    <nav class="landing-nav-actions">
+      <a routerLink="/user/signin" class="nav-link">Entrar</a>
+      <a routerLink="/user/signup" class="btn-landing-primary btn-sm">Cadastre-se</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="landing-hero">
+      <div class="hero-copy">
+        <span class="hero-eyebrow">SUA CASA, EM ORDEM</span>
+        <h1 class="hero-title">
+          Abra a porta e <span class="hero-highlight">guarde cada coisa</span> no lugar certo.
+        </h1>
+        <p class="hero-subtitle">
+          O inventário da sua casa, num cantinho calmo: anote, organize e encontre o que é seu —
+          do par de sapatos ao armário da cozinha.
+        </p>
+        <div class="hero-actions">
+          <a routerLink="/user/signup" class="btn-landing-primary">
+            Criar conta grátis <i class="bi bi-arrow-right"></i>
+          </a>
+          <a routerLink="/user/signin" class="btn-landing-secondary">Já tenho conta</a>
+        </div>
+        <p class="hero-note"><i class="bi bi-check-circle-fill"></i> Grátis para sempre — sem cartão de crédito.</p>
+      </div>
+
+      <div class="hero-preview" aria-hidden="true">
+        <div class="preview-card">
+          <div class="preview-header">
+            <div class="preview-header-icon">
+              <i class="bi bi-house-door"></i>
+            </div>
+            <div class="preview-header-text">
+              <span class="preview-title">Meus itens</span>
+              <span class="preview-subtitle">9 itens guardados</span>
+            </div>
+            <span class="preview-add-btn"><i class="bi bi-plus"></i> Adicionar</span>
+          </div>
+
+          @for (item of previewItems; track item.name) {
+            <div class="preview-item">
+              <span class="preview-item-icon"><i class="bi" [class]="item.icon"></i></span>
+              <div class="preview-item-text">
+                <span class="preview-item-name">{{ item.name }}</span>
+                <span class="preview-item-category">{{ item.category }}</span>
+              </div>
+              <span class="preview-item-price">{{ item.price }}</span>
+            </div>
+          }
+
+          <div class="preview-chips">
+            @for (cat of previewCategories; track cat.label) {
+              <span class="preview-chip">
+                <i class="bi" [class]="cat.icon"></i> {{ cat.label }}
+              </span>
+            }
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="landing-features">
+      <span class="features-eyebrow">POR QUE XPEM</span>
+      <h2 class="features-title">Tudo no lugar, sem perder o aconchego</h2>
+
+      <div class="features-grid">
+        @for (feature of features; track feature.title) {
+          <div class="feature-card">
+            <div class="feature-icon"><i class="bi" [class]="feature.icon"></i></div>
+            <h3 class="feature-title">{{ feature.title }}</h3>
+            <p class="feature-description">{{ feature.description }}</p>
+          </div>
+        }
+      </div>
+    </section>
+
+    <section class="landing-steps">
+      <span class="steps-eyebrow">COMO FUNCIONA</span>
+      <h2 class="steps-title">Três passos para a casa em ordem</h2>
+
+      <div class="steps-grid">
+        @for (step of steps; track step.number) {
+          <div class="step-card">
+            <span class="step-number">{{ step.number }}</span>
+            <h3 class="step-title">{{ step.title }}</h3>
+            <p class="step-description">{{ step.description }}</p>
+          </div>
+        }
+      </div>
+    </section>
+
+    <section class="landing-showcase">
+      <div class="showcase-copy">
+        <span class="showcase-eyebrow">VÍNCULOS ENTRE ITENS</span>
+        <h2 class="showcase-title">
+          Vincule um pertence a outro e <span class="showcase-highlight">veja as conexões</span>
+        </h2>
+        <p class="showcase-subtitle">
+          Comprou um SSD para o notebook? Vincule. Tem uma capa que combina com aquela poltrona?
+          Vincule. Cada item sabe a quem pertence — e você encontra tudo num olhar.
+        </p>
+
+        <ul class="showcase-bullets">
+          @for (bullet of associationBullets; track bullet) {
+            <li><i class="bi bi-link-45deg"></i> {{ bullet }}</li>
+          }
+        </ul>
+
+        <div class="hero-actions">
+          <a routerLink="/user/signup" class="btn-landing-primary">
+            Criar conta grátis <i class="bi bi-arrow-right"></i>
+          </a>
+          <a routerLink="/user/signin" class="btn-landing-secondary btn-white">Entrar</a>
+        </div>
+      </div>
+
+      <div class="showcase-preview" aria-hidden="true">
+        <div class="association-card">
+          <span class="association-card-title">Vínculos de "{{ associationMain.name }}"</span>
+
+          <div class="association-main">
+            <span class="association-main-icon"><i class="bi" [class]="associationMain.icon"></i></span>
+            <div class="association-main-text">
+              <span class="association-main-name">{{ associationMain.name }}</span>
+              <span class="association-main-category">{{ associationMain.category }}</span>
+            </div>
+            <span class="association-badge">Principal</span>
+          </div>
+
+          <div class="association-divider">
+            <span>VINCULADO A</span>
+          </div>
+
+          <div class="association-links">
+            @for (link of associationLinks; track link.name) {
+              <div class="association-link">
+                <span class="association-link-icon" [class]="'icon-' + link.color">
+                  <i class="bi" [class]="link.icon"></i>
+                </span>
+                <div class="association-link-text">
+                  <span class="association-link-name">{{ link.name }}</span>
+                  <span class="association-link-category">{{ link.category }}</span>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="landing-final-cta">
+      <h2 class="final-cta-title">Pronto para colocar sua casa em ordem?</h2>
+      <p class="final-cta-subtitle">Crie sua conta grátis e comece a guardar seus pertences agora mesmo.</p>
+      <div class="hero-actions final-cta-actions">
+        <a routerLink="/user/signup" class="btn-landing-primary">
+          Criar conta grátis <i class="bi bi-arrow-right"></i>
+        </a>
+        <a routerLink="/user/signin" class="btn-landing-secondary">Já tenho conta</a>
+      </div>
+      <p class="final-cta-trust">
+        <i class="bi bi-shield-check"></i> Seus dados são só seus — não vendemos nem compartilhamos suas informações.
+      </p>
+    </section>
+  </main>
+
+  <footer class="landing-footer">
+    <div class="footer-brand">
+      <img src="logo.png" alt="Xpem Inventário" class="brand-logo" />
+      <span class="footer-brand-name">Xpem Inventário</span>
+    </div>
+    <span class="footer-tagline">Seus pertences, guardados com carinho</span>
+  </footer>
+</div>

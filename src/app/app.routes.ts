@@ -4,12 +4,13 @@ import { SignIn } from './pages/user/sign-in/signin';
 import { SignUp } from './pages/user/sign-up/signup';
 import { UpdatePassword } from './pages/user/update-password/update-password';
 import { Home } from './pages/home/home';
+import { Landing } from './pages/landing/landing';
 import { ItemEdit } from './pages/item/item-edit/item-edit';
 import { CategoryList } from './pages/category/category-list/category-list';
 import { CategoryEdit } from './pages/category/category-edit/category-edit';
 
 export const routes: Routes = [
-  { path: '', redirectTo: 'home', pathMatch: 'full' },
+  { path: '', component: Landing, pathMatch: 'full', data: { title: 'Xpem Inventário' } },
 
   // Autenticação
   { path: 'user/signin', component: SignIn, data: { title: 'Entrar' } },
