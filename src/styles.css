@@ -176,11 +176,30 @@ body {
   box-shadow: 0 1px 4px rgba(74, 65, 57, 0.35);
 }
 
+.auth-back-link {
+  position: absolute;
+  top: 1.5rem;
+  left: 1.5rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+}
+
+.auth-back-link:hover {
+  color: var(--color-text-primary);
+}
+
 .auth-brand {
   display: flex;
   align-items: center;
   gap: 0.5rem;
   margin-bottom: 1.5rem;
+  text-decoration: none;
+  width: fit-content;
 }
 
 .auth-title {
