@@ -8,9 +8,14 @@
   --color-coral-dark:   #a85e3a;
   --color-coral-shadow: rgba(196, 113, 74, 0.12);
 
-  --bg-app:   #dccdb4;
-  --bg-card:  white;
-  --bg-input: #fdfaf6;
+  --bg-app:            #dccdb4;
+  --bg-card:           white;
+  --bg-input:          #fdfaf6;
+  --bg-surface:        #f6f0e6;
+  --bg-surface-active: #f3ede6;
+  --bg-sidebar:        #faf6f1;
+  --bg-hover:          #f0e9df;
+  --bg-pill:           #d8dacb;
 
   --color-text-primary:     #1a1a1a;
   --color-text-secondary:   #4b5563;
@@ -20,11 +25,86 @@
   --border-color:      #ddd6cc;
   --border-color-card: #ecdfd3;
 
+  --shadow-card: rgba(74, 65, 57, 0.12);
+
+  --bg-info-soft:     #fdf3ec;
+  --border-info-soft: #e8cbb8;
+  --color-info-text:  #7a4f34;
+
+  --bg-success-soft:     #f0fdf4;
+  --border-success-soft: #bbf7d0;
+  --color-success:       #16a34a;
+
+  /* Paleta do modo escuro — usada apenas dentro de .dark-mode */
+  --bg-app-dark:            #15171c;
+  --bg-surface-dark:        #1e2128;
+  --bg-surface-active-dark: #2c2f38;
+  --bg-sidebar-dark:        #1a1c22;
+  --bg-hover-dark:          #2a2d36;
+  --bg-input-dark:          #262932;
+  --bg-pill-dark:           #3a3c2e;
+
+  --color-text-primary-dark:     #f3f1ee;
+  --color-text-secondary-dark:   #a9a49b;
+  --color-text-muted-dark:       #8b8579;
+  --color-text-placeholder-dark: #6d675c;
+
+  --border-color-dark:      #33363d;
+  --border-color-card-dark: #2c2f37;
+
+  --shadow-card-dark: rgba(0, 0, 0, 0.45);
+
+  --bg-info-soft-dark:     #2e2118;
+  --border-info-soft-dark: #4a3626;
+  --color-info-text-dark:  #e8b98f;
+
+  --bg-success-soft-dark:     #17301f;
+  --border-success-soft-dark: #2c5b3a;
+  --color-success-dark:       #4ade80;
+
   /* Legacy — mantidos para não quebrar referências remanescentes */
   --primary-green: #22c55e;
   --primary-red:   #ef4444;
   --bg-dark:       #1a1d23;
   --text-muted:    #9ca3af;
+}
+
+/* ----------------------------------------
+   Modo escuro — aplicado via classe .dark-mode
+   (ver ThemeService). Reatribui as mesmas
+   variáveis usadas em todo o app para os
+   valores da paleta escura acima.
+---------------------------------------- */
+.dark-mode {
+  --bg-app:            var(--bg-app-dark);
+  --bg-surface:        var(--bg-surface-dark);
+  --bg-surface-active: var(--bg-surface-active-dark);
+  --bg-sidebar:        var(--bg-sidebar-dark);
+  --bg-hover:          var(--bg-hover-dark);
+  --bg-input:          var(--bg-input-dark);
+  --bg-pill:           var(--bg-pill-dark);
+
+  --color-text-primary:     var(--color-text-primary-dark);
+  --color-text-secondary:   var(--color-text-secondary-dark);
+  --color-text-muted:       var(--color-text-muted-dark);
+  --color-text-placeholder: var(--color-text-placeholder-dark);
+
+  --border-color:      var(--border-color-dark);
+  --border-color-card: var(--border-color-card-dark);
+
+  --shadow-card: var(--shadow-card-dark);
+
+  --bg-info-soft:     var(--bg-info-soft-dark);
+  --border-info-soft: var(--border-info-soft-dark);
+  --color-info-text:  var(--color-info-text-dark);
+
+  --bg-success-soft:     var(--bg-success-soft-dark);
+  --border-success-soft: var(--border-success-soft-dark);
+  --color-success:       var(--color-success-dark);
+
+  --color-coral:        #d98b52;
+  --color-coral-dark:   #c4714a;
+  --color-coral-shadow: rgba(217, 139, 82, 0.2);
 }
 
 /* ----------------------------------------
@@ -37,7 +117,7 @@ h1 { font-family: 'Boogaloo', 'Nunito', sans-serif; }
 body {
   margin: 0;
   font-family: 'Nunito', 'Helvetica Neue', sans-serif;
-  background-color: #dccdb4;
+  background-color: var(--bg-app);
   min-height: 100vh;
 }
 
@@ -54,7 +134,7 @@ body {
   display: block;
   font-size: 0.85rem;
   font-weight: 500;
-  color: #374151;
+  color: var(--color-text-secondary);
   margin-bottom: 0.375rem;
 }
 
@@ -65,7 +145,7 @@ body {
   border-radius: 12px;
   font-size: 0.95rem;
   color: var(--color-text-primary);
-  background-color: white;
+  background-color: var(--bg-input);
   outline: none;
   transition: border-color 0.2s, box-shadow 0.2s;
   box-sizing: border-box;
@@ -95,7 +175,7 @@ body {
   border-radius: 12px;
   font-size: 0.9rem;
   color: var(--color-text-primary);
-  background-color: white;
+  background-color: var(--bg-input);
   outline: none;
   transition: border-color 0.2s, box-shadow 0.2s;
   box-sizing: border-box;
@@ -168,7 +248,7 @@ body {
 }
 
 .auth-card {
-  background: #f6f0e6;
+  background: var(--bg-surface);
   border-radius: 16px;
   padding: 2.5rem 2rem;
   width: 100%;
@@ -326,12 +406,12 @@ body {
 }
 
 .btn-back:hover {
-  background-color: #f0e9df;
+  background-color: var(--bg-hover);
   color: var(--color-text-primary);
 }
 
 .form-section {
-  background-color: #f6f0e6;
+  background-color: var(--bg-surface);
   border: 1px solid var(--border-color-card);
   border-radius: 16px;
   padding: 1.25rem;
@@ -372,7 +452,7 @@ body {
   transition: background-color 0.15s;
 }
 
-.btn-cancel:hover { background-color: #f0e9df; }
+.btn-cancel:hover { background-color: var(--bg-hover); }
 
 /* ----------------------------------------
    Modais — tema claro (category-edit e item-edit)

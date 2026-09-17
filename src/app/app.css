@@ -1,6 +1,6 @@
 .authenticated-area {
   min-height: 100vh;
-  background-color: #dccdb4;
+  background-color: var(--bg-app);
 }
 
 .app-topbar {
@@ -11,16 +11,16 @@
 
 .sidebar-toggle {
   background: none;
-  border: 1px solid #ddd6cc;
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   padding: 0.375rem 0.625rem;
   font-size: 1.25rem;
-  color: #6b5c4e;
+  color: var(--color-text-secondary);
   cursor: pointer;
   line-height: 1;
   transition: background-color 0.15s;
 }
 
 .sidebar-toggle:hover {
-  background-color: #f0e9df;
+  background-color: var(--bg-hover);
 }

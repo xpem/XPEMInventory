@@ -3,6 +3,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { Router, RouterOutlet, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs';
 import { AuthService } from './services/auth.service';
+import { ThemeService } from './services/theme.service';
 import { Sidebar } from './components/sidebar/sidebar';
 import { Toasts } from './components/toasts/toasts';
 
@@ -15,6 +16,7 @@ import { Toasts } from './components/toasts/toasts';
 })
 export class App implements OnInit {
   protected authService = inject(AuthService);
+  protected themeService = inject(ThemeService);
   private router = inject(Router);
   private platformId = inject(PLATFORM_ID);
 
