@@ -11,24 +11,24 @@
   align-items: center;
   gap: 0.4rem;
   font-size: 0.875rem;
-  color: #374151;
+  color: var(--color-text-secondary);
   cursor: pointer;
   user-select: none;
 }
 
 .remember-check {
-  accent-color: #c4714a;
+  accent-color: var(--color-coral);
   cursor: pointer;
 }
 
 .forgot-link {
   font-size: 0.875rem;
-  color: #c4714a;
+  color: var(--color-coral);
   text-decoration: none;
 }
 
 .forgot-link:hover {
-  color: #a85e3a;
+  color: var(--color-coral-dark);
   text-decoration: underline;
 }
 
@@ -48,9 +48,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: rgba(246, 240, 230, 0.85);
+  background-color: var(--bg-surface);
   border-radius: 4px;
   font-size: 0.9rem;
-  color: #374151;
+  color: var(--color-text-secondary);
   font-weight: 500;
+  opacity: 0.92;
 }

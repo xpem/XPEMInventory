@@ -6,6 +6,10 @@
       <span class="brand-badge">INVENTÁRIO</span>
     </div>
     <nav class="landing-nav-actions">
+      <button type="button" class="btn-theme-toggle" (click)="themeService.toggleTheme()"
+        [attr.aria-label]="themeService.isDarkMode() ? 'Ativar modo claro' : 'Ativar modo escuro'">
+        <i [class]="themeService.isDarkMode() ? 'bi bi-sun' : 'bi bi-moon-stars'"></i>
+      </button>
       <a routerLink="/user/signin" class="nav-link">Entrar</a>
       <a routerLink="/user/signup" class="btn-landing-primary btn-sm">Cadastre-se</a>
     </nav>
