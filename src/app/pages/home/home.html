@@ -2,6 +2,10 @@
 <div class="home-header">
   <h1 class="home-title">Meus itens</h1>
   <div class="header-actions">
+    <button type="button" class="btn-theme-toggle" (click)="themeService.toggleTheme()"
+      [attr.aria-label]="themeService.isDarkMode() ? 'Ativar modo claro' : 'Ativar modo escuro'">
+      <i [class]="themeService.isDarkMode() ? 'bi bi-sun' : 'bi bi-moon-stars'"></i>
+    </button>
     <button type="button" class="btn-filter" [class.active]="showFilters()" [class.has-filter]="hasActiveSearch()"
       (click)="toggleFilters()" aria-label="Filtros">
       <i class="bi bi-sliders"></i>

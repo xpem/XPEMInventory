@@ -12,6 +12,7 @@ import { FormsModule } from '@angular/forms';
 import { ItemApiService } from '../../services/item-api';
 import { ToastService } from '../../services/toast.service';
 import { AuthService } from '../../services/auth.service';
+import { ThemeService } from '../../services/theme.service';
 import { ItemDTO, UIItemSituation, ItemSearchParams, ResultOrderBy } from '../../models/item.model';
 
 @Component({
@@ -25,6 +26,7 @@ export class Home implements OnInit, OnDestroy {
   private itemApi = inject(ItemApiService);
   private toastService = inject(ToastService);
   private authService = inject(AuthService);
+  protected themeService = inject(ThemeService);
   private router = inject(Router);
   private platformId = inject(PLATFORM_ID);
 

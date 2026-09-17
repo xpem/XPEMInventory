@@ -8,8 +8,8 @@
   aria-hidden="true"
 >
   <div class="modal-dialog modal-dialog-scrollable">
-    <div class="modal-content" style="background-color: #faf6f1; border: 1px solid #ecdfd3">
-      <div class="modal-header" style="background-color: #c4714a; border-bottom: none">
+    <div class="modal-content" style="background-color: var(--bg-sidebar); border: 1px solid var(--border-color-card)">
+      <div class="modal-header" style="background-color: var(--color-coral); border-bottom: none">
         <h5 class="modal-title text-white" id="modalSubCategoriesLabel">
           {{ selectedCategory?.name ?? 'Subcategorias' }}
         </h5>
@@ -50,7 +50,7 @@
         }
       </div>
 
-      <div class="modal-footer" style="border-top-color: #ecdfd3">
+      <div class="modal-footer" style="border-top-color: var(--border-color-card)">
         <button
           type="button"
           class="modal-btn-back"
@@ -70,16 +70,16 @@
     align-items: center;
     gap: 0.75rem;
     padding: 0.75rem 0.875rem;
-    background-color: white;
-    border: 1px solid #ecdfd3;
+    background-color: var(--bg-input);
+    border: 1px solid var(--border-color-card);
     border-radius: 10px;
     text-decoration: none;
-    color: #1a1a1a;
+    color: var(--color-text-primary);
     transition: background-color 0.15s;
   }
   .modal-cat-item:hover {
-    background-color: #f0e9df;
-    color: #1a1a1a;
+    background-color: var(--bg-hover);
+    color: var(--color-text-primary);
   }
   .modal-cat-dot {
     width: 32px;
@@ -108,15 +108,15 @@
     align-items: center;
     gap: 0.25rem;
     background: none;
-    border: 1px solid #ddd6cc;
+    border: 1px solid var(--border-color);
     border-radius: 8px;
     padding: 0.4rem 0.875rem;
     font-size: 0.875rem;
-    color: #4b5563;
+    color: var(--color-text-secondary);
     cursor: pointer;
     transition: background-color 0.15s;
   }
   .modal-btn-back:hover {
-    background-color: #f0e9df;
+    background-color: var(--bg-hover);
   }
 </style>

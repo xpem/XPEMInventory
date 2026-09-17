@@ -1,6 +1,6 @@
 <app-toasts />
 
-<div>
+<div [class.dark-mode]="themeService.isDarkMode()">
   @if (authService.isAuthenticated()) {
     <app-sidebar />
   }
